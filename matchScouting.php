@@ -81,6 +81,10 @@ if (isset($_COOKIE['matchData'])) {
       opacity: 1 !important;
     }
 
+    g{
+      pointer-events: all;
+    }
+
   </style>
 
 </head>
@@ -188,7 +192,7 @@ if($RESUMING_MATCH){
 
       <div style="margin: 15px;flex: 1; display: flex;">
         <div style="display: flex;flex-direction: row;width: 60%;">
-          <object style="display:flex;flex: 1;" type="image/svg+xml" data="/util/svg/feed.svg" id="feedSVG"></object>
+          <object style="display:flex;flex: 1;" type="image/svg+xml" data="/util/svg/boilersClose/leftBlueFeedForRed.svg" id="feedSVG"></object>
         </div>
 
         <div style="position:relative;display: flex;flex-direction: column;width: 40%;">
@@ -377,6 +381,7 @@ String.prototype.capitalize = function(allWords) {
 
 var gearSVGDoc;
 var shootSVGDoc;
+var feedSVGDoc;
 var HALF_FIELD_LENGTH_INCHES = <?=$helper::HALF_FIELD_LENGTH_INCHES?>;
 var HALF_FIELD_HEIGHT_INCHES = <?=$helper::HALF_FIELD_HEIGHT_INCHES?>;
 
@@ -388,11 +393,14 @@ var SHOOT_RESULT = null;
 var GEAR_LOCATION = null;
 var GEAR_RESULT = null;
 
+var FEED_LOCATION = null;
+
 var RESUMING_MATCH = <?=($RESUMING_MATCH ? "true" : "false")?>;
 var LEFT_TEAM_COLOR = "<?=($helper->LEFT_TEAM)?>";
 var DISABLE_NEXT_BREACH_HOVEROUT = false;
 var BREACH_MAP_FILTER = "origin";
 
+var FEEDSVG_IDS = ["overflowHolder","returnFarHolder","returnCloseHolder","boilerSideCloseHolder","boilerSideMiddleHolder","boilerSideFarHolder","loadingSideCloseHolder","loadingSideFarHolder"]
 
 
 
@@ -537,179 +545,9 @@ $(document).ready(function () {
     $(this).parent().remove();
     generateJSON();
   });
-  $("#breachPage .sideCircleContainer,#breachStuck").click(function () {
-    if (BREACH_MAP_FILTER == "origin" && $(this).hasClass("sideCircleContainer")) {
-      DISABLE_NEXT_BREACH_HOVEROUT = true;
-      var start = $(this).find(".startBreachCircle");
-      var backOut = $(this).find(".backOutFromBreachCircle");
-
-      if ($(start).css("display") == "block") {
-        BREACH_MAP_FILTER = "defense";
-
-        $(this).attr("startedHere", "true");
-
-      }
-    }
-    else if (BREACH_MAP_FILTER == "destination") {
-
-      DISABLE_NEXT_BREACH_HOVEROUT = true;
-      var startCircleContainer = $(".sideCircleContainer[startedHere='true']");
-      var defenseCircle = $(".defenseCircle:visible");
-      var endingCircle = $(".backOutFromBreachCircle:visible");
-      var clickContainer = $(this);
-
-      writeBreachHistoryItem(startCircleContainer,defenseCircle,clickContainer,endingCircle, $("#modeHeading").attr("data-mode"));
-
-      clearBreach();
 
 
-    }
-  });
-  $("#breachPage .sideCircleContainer").hover(function () {
 
-      DISABLE_NEXT_BREACH_HOVEROUT = false;
-
-      var start, backOut;
-
-      if (BREACH_MAP_FILTER == "origin") {
-        start = $(this).find(".startBreachCircle");
-        backOut = $(this).find(".backOutFromBreachCircle");
-
-
-        if ($(start).css("display") == "none") {
-          if ($(backOut).css("display") != "block") {
-            $(start).css("display", "block")
-          }
-          else {
-            DISABLE_NEXT_BREACH_HOVEROUT = true;
-          }
-        }
-        else {
-          $(start).css("display", "none");
-          $(backOut).css("display", "block");
-
-        }
-      }
-      else if (BREACH_MAP_FILTER == "destination") {
-
-        var tryIndex = $(".defenseCircle:visible").parent().parent().parent().index();
-        var finishIndex = $(this).parent().index();
-
-        if (Math.abs(tryIndex - finishIndex) != 1) {
-          return;
-        }
-
-
-        var ind = $(".startBreachCircle:visible").parent().index();
-
-        start = $(this).siblings().parent().find(".sideCircleContainer").eq(ind).find(".startBreachCircle");
-        backOut = $(this).siblings().parent().find(".sideCircleContainer").eq(ind).find(".backOutFromBreachCircle");
-
-
-        if ($(start).css("display") == "none") {
-          $(backOut).css("display", "block");
-        }
-        else {
-          $(start).css("display", "none");
-          $(backOut).css("display", "block");
-        }
-
-      }
-
-    },
-    function () {
-
-      if (DISABLE_NEXT_BREACH_HOVEROUT) {
-        DISABLE_NEXT_BREACH_HOVEROUT = !DISABLE_NEXT_BREACH_HOVEROUT;
-        return;
-      }
-
-      var start, backOut;
-
-      if (BREACH_MAP_FILTER == "origin") {
-
-        start = $(this).find(".startBreachCircle");
-        backOut = $(this).find(".backOutFromBreachCircle");
-
-
-        if ($(backOut).css("display") == "none") {
-          $(start).css("display", "none")
-        }
-        else {
-          $(start).css("display", "block");
-          $(backOut).css("display", "none");
-        }
-
-
-      }
-      else if (BREACH_MAP_FILTER == "destination") {
-
-        var ind = $(".backOutFromBreachCircle:visible").parent().index();
-
-        start = $(this).siblings().parent().find(".sideCircleContainer").eq(ind).find(".startBreachCircle");
-        backOut = $(this).siblings().parent().find(".sideCircleContainer").eq(ind).find(".backOutFromBreachCircle");
-
-
-        if ($(start).parent().attr("startedHere") == "true") {
-          $(start).css("display", "block");
-          $(backOut).css("display", "none");
-        }
-        else {
-          $(backOut).css("display", "none");
-        }
-      }
-
-    })
-  $("#breachPage .defenseCircleContainer").hover(function () {
-
-      var originIndex = $(".startBreachCircle:visible").parent().parent().index();
-      var defenseIndex = $(this).parent().parent().index();
-
-      if (Math.abs(originIndex - defenseIndex) != 1) {
-        return;
-      }
-
-
-      if (BREACH_MAP_FILTER == "defense") {
-        DISABLE_NEXT_BREACH_HOVEROUT = false;
-        var circle = $(this).find(".defenseCircle");
-
-        $(circle).css("display", "block");
-        $(this).parent().find(".imageContainer").addClass("blurred");
-
-      }
-
-    },
-    function () {
-      if (BREACH_MAP_FILTER == "defense") {
-        if (DISABLE_NEXT_BREACH_HOVEROUT) {
-          DISABLE_NEXT_BREACH_HOVEROUT = !DISABLE_NEXT_BREACH_HOVEROUT;
-          return;
-        }
-        var circle = $(this).find(".defenseCircle");
-        $(circle).css("display", "none");
-        $(this).parent().find(".imageContainer").removeClass("blurred");
-
-      }
-
-    })
-  $("#breachPage .defenseCircleContainer").click(function () {
-    if (BREACH_MAP_FILTER == "defense") {
-      DISABLE_NEXT_BREACH_HOVEROUT = true;
-      BREACH_MAP_FILTER = "destination"
-
-      var defenseIndex = $(this).parent().index();
-      var origin = $(".startBreachCircle:visible");
-      var originIndex = $(origin).parent().index();
-      if (defenseIndex != originIndex) {
-        $(origin).css("display", "none");
-        $(origin).parent().removeAttr("startedHere");
-        $(origin).parent().parent().find(".startBreachCircle").eq(defenseIndex).css("display", "block").parent().attr("startedHere", "true");
-      }
-
-
-    }
-  });
   $("#shootPage #shootHigh, #shootPage #shootLow").click(function () {
     $(this).css("background-color", "#FF7F2A").attr("selected");
     $(this).siblings().eq(0).css("background-color", "").removeAttr("selected");
@@ -852,7 +690,6 @@ $(window).on('load', function () {
     // svgItem.setAttribute("fill", "#50ce4c");
     gearSVGDocMouseOver(e);
   });
-
   gearSVGDoc.addEventListener("touchstart", function (e) {
     // svgItem.setAttribute("fill", "#4c9dce");
     gearSVGDocMouseOver(e);
@@ -875,6 +712,39 @@ $(window).on('load', function () {
     gearSVGDocClick(e);
 
   });
+
+  var a = document.getElementById("feedSVG");
+  // Get the SVG document inside the Object tag
+  feedSVGDoc = a.contentDocument;
+  // Get one of the SVG items by ID;
+  feedSVGDoc.addEventListener("mouseover", function (e) {
+    // svgItem.setAttribute("fill", "#50ce4c");
+    feedSVGDocMouseOver(e);
+  });
+  feedSVGDoc.addEventListener("touchstart", function (e) {
+    // svgItem.setAttribute("fill", "#4c9dce");
+    feedSVGDocMouseOver(e);
+    e.preventDefault();
+  });
+  feedSVGDoc.addEventListener("mouseout", function (e) {
+    // svgItem.setAttribute("fill", "#4c9dce");
+    feedSVGDocMouseOut(e);
+
+  });
+  feedSVGDoc.addEventListener("touchend", function (e) {
+    // svgItem.setAttribute("fill", "#4c9dce");
+    feedSVGDocMouseOut(e);
+    e.preventDefault();
+    feedSVGDocClick(e);
+
+  });
+  feedSVGDoc.addEventListener("click", function (e) {
+    // svgItem.setAttribute("fill", "#4c9dce");
+    feedSVGDocClick(e);
+
+  });
+
+
 
   a = document.getElementById("shootSVG");
   // Get the SVG document inside the Object tag
@@ -903,7 +773,7 @@ $(window).on('load', function () {
 
 
 
-  $("#gearPage,#breachPage,#shootPage,#endGamePage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
+  $("#gearPage,#feedPage,#shootPage,#endGamePage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
   $("#endGamePage").css("flex", "0 1 75%").css("width", "").css("height", "").css("overflow", "");
 
 
@@ -938,7 +808,7 @@ $(window).on('load', function () {
   });
 
 
-  $("#gearPage,#breachPage,#shootPage,#endGamePage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
+  $("#gearPage,#feedPage,#shootPage,#endGamePage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
   $("#gearPage").css("flex", "0 1 75%").css("width", "").css("height", "").css("overflow", "");
 
 
@@ -982,6 +852,50 @@ function gearSVGDocClick(e) {
     checkAndAddGearHistoryItem($("#modeHeading").attr("data-mode"))
   }
 }
+
+
+
+function feedSVGDocMouseOver(e) {
+  var id = e.target.getAttribute("id");
+  if ( FEEDSVG_IDS.indexOf(id) != -1) {
+    var placeID = id.substring(0,id.length-6);
+
+    var place = feedSVGDoc.getElementById(placeID);
+    $(place).css("opacity", 1);
+  }
+
+}
+function feedSVGDocMouseOut(e) {
+  var id = e.target.getAttribute("id");
+
+  if ( FEEDSVG_IDS.indexOf(id) != -1 && (FEED_LOCATION + "Holder") !== id) {
+    var placeID = id.substring(0,id.length-6);
+    var place = feedSVGDoc.getElementById(placeID);
+    $(place).css("opacity", 0);
+  }
+
+}
+
+function feedSVGDocClick(e) {
+  var id = e.target.getAttribute("id");
+  if ( FEEDSVG_IDS.indexOf(id) != -1) {
+    var placeID = id.substring(0,id.length-6);
+
+    for(i in FEEDSVG_IDS){
+      var tmpID = FEEDSVG_IDS[i].substring(0,FEEDSVG_IDS[i].length-6);
+      var tmpPlace = $(feedSVGDoc.getElementById(tmpID))
+      tmpPlace.css("opacity", 0)
+    }
+    var place = feedSVGDoc.getElementById(placeID);
+    $(place).css("opacity", 1);
+    FEED_LOCATION = placeID;
+    console.log("FEED_LOCATION: " + FEED_LOCATION);
+//    checkAndAddGearHistoryItem($("#modeHeading").attr("data-mode"))
+  }
+}
+
+
+
 function checkAndAddGearHistoryItem(mode){
   if(GEAR_LOCATION != null && GEAR_RESULT != null){
     var result,bg;
