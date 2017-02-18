@@ -411,8 +411,6 @@ $(document).ready(function () {
   else{
       $(window).load(function(){
         if($.cookie("matchData") != "") {
-
-
           var data = JSON.parse($.cookie("matchData"));
           $("#taskSwitcher > div").eq(data.currTab).trigger("click");
 
@@ -512,6 +510,9 @@ $(document).ready(function () {
   $("#cancelShoot").click(function(){
     clearShoot();
   });
+  $("#cancelGear").click(function(){
+    clearGear();
+  });
   $("#abortMatch").click(function(){
     $.ajax({
       type: "POST",
@@ -545,8 +546,6 @@ $(document).ready(function () {
     $(this).parent().remove();
     generateJSON();
   });
-
-
 
   $("#shootPage #shootHigh, #shootPage #shootLow").click(function () {
     $(this).css("background-color", "#FF7F2A").attr("selected");
@@ -744,8 +743,6 @@ $(window).on('load', function () {
 
   });
 
-
-
   a = document.getElementById("shootSVG");
   // Get the SVG document inside the Object tag
   shootSVGDoc = a.contentDocument;
@@ -772,7 +769,7 @@ $(window).on('load', function () {
     });
 
 
-
+    //show endGamePage for rateYo creation
   $("#gearPage,#feedPage,#shootPage,#endGamePage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
   $("#endGamePage").css("flex", "0 1 75%").css("width", "").css("height", "").css("overflow", "");
 
@@ -807,7 +804,7 @@ $(window).on('load', function () {
 
   });
 
-
+  //rateYo creation done. Hide endGamePage again.
   $("#gearPage,#feedPage,#shootPage,#endGamePage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
   $("#gearPage").css("flex", "0 1 75%").css("width", "").css("height", "").css("overflow", "");
 
@@ -852,9 +849,6 @@ function gearSVGDocClick(e) {
     checkAndAddGearHistoryItem($("#modeHeading").attr("data-mode"))
   }
 }
-
-
-
 function feedSVGDocMouseOver(e) {
   var id = e.target.getAttribute("id");
   if ( FEEDSVG_IDS.indexOf(id) != -1) {
@@ -875,7 +869,6 @@ function feedSVGDocMouseOut(e) {
   }
 
 }
-
 function feedSVGDocClick(e) {
   var id = e.target.getAttribute("id");
   if ( FEEDSVG_IDS.indexOf(id) != -1) {
@@ -1275,19 +1268,17 @@ function clearBreach(){
 function handleKeypress(e){
     if(e.code.indexOf("Digit") > -1){
       var index = parseInt(e.code.substring(e.code.length -1)) -1;
-      clearBreach();
-      clearShoot();
       $("#taskSwitcher > div").eq(index).trigger("click");
     }
     else  if (e.keyCode == 27) { // escape key maps to keycode `27`
-      if($("#breachPage").width() > 0){
-        $("#cancelBreach").trigger("click");
+      if($("#gearPage").width() > 0){
+        $("#cancelGear").trigger("click");
       }
       else if($("#shootPage").width() > 0){
         $("#cancelShoot").trigger("click");
       }
     }
-    else if (e.keyCode == 90 && e.ctrlKey){
+    else if (e.keyCode == 90 && e.ctrlKey){ //Ctrl-Z!
       $("#historyList div.historyItem").eq(0).find(".deleteHistoryItem").trigger("click")
     }
 }
