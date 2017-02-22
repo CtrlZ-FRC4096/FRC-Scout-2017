@@ -200,19 +200,89 @@ if($RESUMING_MATCH){
              style="border:2px solid black;position: absolute;margin-top:16px;margin-left:16px"
              class="button button-pill button-caution ">Cancel</a>
 
-          <div style="display: flex; flex-direction: column; width: 80%; flex-flow: column; height: 10px; margin: 0 auto; flex: 1 0 100%; justify-content: center; align-items: center;">
+          <style>
 
-            <div
-              style="cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;">
-              <div id="cancelScore" style="display:flex;align-items:center;flex: 1;border-right: 2px solid black">
-                <h2 style="font-weight:bold;flex: 1;text-align: center">Score</h2>
+            #feedBody{
+              display: flex;flex-direction: column;width: 80%;flex-flow: column;height: 10px;margin: 0 auto;flex: 1 0 100%;justify-content: center;align-items: center;
+            }
+            #feedTypeSwitcher{
+              cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px;width: 100%;margin: 5% auto 5% auto;border: 2px solid black;;min-height:46px
+            }
+            #feedBallPercentage,#feedGear{
+              width: 100%
+            }
+
+            #feedGearOption,#feedBallOption,#feedGearDropped,#feedGearGround,#feedGearSuccess,#feedGearFailure{
+              display:flex;align-items:center;flex: 1
+            }
+            #feedBallPercentage{
+              cursor: pointer; display: flex; flex-direction: column; flex: 0 1 145px; width: 100%;
+            }
+            #feedBallPercentageOptions,#feedGearOutcomeOptions,#feedGearMethodOptions{
+              cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;min-height:46px
+            }
+            #feedBallPercentageBefore,#feedBallPercentageAfter{
+              display:flex;align-items:center;flex: 1;width:50%;flex-direction:column;justify-content: center;
+            }
+            #feedBallOption,#feedBallPercentageBefore,#feedGearSuccess,#feedGearDropped{
+               border-right: 2px solid black;
+             }
+
+            #feedBallPercentageAfter input, #feedBallPercentageBefore input{
+              font-weight:bold;text-align: center;width:80%;margin: 0 auto;height: 70%;flex: 0 1 60px
+            }
+          </style>
+
+
+
+          <div id="feedBody" style="">
+            <div id="feedTypeSwitcher" style="">
+              <div id="feedBallOption" style="">
+                <h2 style="font-weight:bold;flex: 1;text-align: center">Ball</h2>
               </div>
-              <div id="cancelMiss" style="display:flex;align-items:center;flex: 1">
-                <h2 style="font-weight:bold;flex: 1;text-align: center">Miss</h2>
+              <div id="feedGearOption" style="">
+                <h2 style="font-weight:bold;flex: 1;text-align: center">Gear</h2>
               </div>
             </div>
+            <div id="feedBallPercentage" style="">
+              <h2 style=" margin: 0; ">Percentage of Robot's Ball Pit:</h2>
+              <div id="feedBallPercentageOptions" style="">
+                <div id="feedBallPercentageBefore" style="/">
+                  <input type="text" style="" placeholder="Before %">
+                </div>
+                <div id="feedBallPercentageAfter" style="/">
+                  <input type="text" style="" placeholder="After %">
+                </div>
+              </div>
+            </div>
+            <div id="feedGear" style="display:none">
+              <div id="feedGearOutcomeOptions" style="">
+                <div id="feedGearSuccess" style="">
+                  <h2 style="font-weight:bold;flex: 1;text-align: center">Success</h2>
+                </div>
+                <div id="feedGearFailure" style="">
+                  <h2 style="font-weight:bold;flex: 1;text-align: center">Failure</h2>
+                </div>
+              </div>
+              <div id="feedGearMethodOptions" style="">
+                <div id="feedGearDropped" style="">
+                  <h2 style="font-weight:bold;flex: 1;text-align: center">Dropped In</h2>
+                </div>
+                <div id="feedGearGround" style="">
+                  <h2 style="font-weight:bold;flex: 1;text-align: center">From Ground</h2>
+                </div>
+              </div>
+
+
+
+            </div>
+
+
 
           </div>
+
+
+
 
         </div>
 
@@ -226,7 +296,7 @@ if($RESUMING_MATCH){
         <div style="display: flex;flex-direction: row;width: 60%;">
           <object style="cursor:crosshair;display:flex;flex: 1;" type="image/svg+xml"
                   field-direction="<?= ($helper->LEFT_TEAM == $SCOUTING_TEAM_COLOR ? "right" : "left") ?>" id="shootSVG"
-                  data="/util/svg/<?= ($SCOUTING_TEAM_COLOR == "red" ? "blue" : "red") . ($helper->LEFT_TEAM == $SCOUTING_TEAM_COLOR ? "Right" : "Left") ?>Shoot.svg"></object>
+                  data="/util/svg/boilersClose/<?= ($SCOUTING_TEAM_COLOR == "red" ? "blue" : "red") . ($helper->LEFT_TEAM == $SCOUTING_TEAM_COLOR ? "Right" : "Left") ?>Shoot.svg"></object>
         </div>
 
         <div style="position:relative;display: flex;flex-direction: column;width: 40%;">
@@ -935,6 +1005,7 @@ function shootSVGDocClick(e) {
   var minWidth = layer1.left;
   var maxWidth = minWidth + layer1.width;
   var minHeight = layer1.top;
+//  var minHeight = 0;
   var maxHeight = minHeight + layer1.height;
 
   if (e.clientX >= minWidth && e.clientX <= maxWidth && e.clientY >= minHeight && e.clientY <= maxHeight) {
@@ -959,14 +1030,14 @@ function shootSVGDocClick(e) {
     }
     if (shootSVGDoc.getElementById("shootPosition")) {
       d3.select(shootSVGDoc.getElementById("shootPosition"))
-        .attr("cx", (clickX / layer1.width) * 498.90457)
-        .attr("cy", ((maxHeight-clickY) / layer1.height) * 489.37781)
+        .attr("cx", (clickX / layer1.width) * 696)
+        .attr("cy", ((maxHeight-(clickY+minHeight)) / layer1.height) * 508)
     }
     else {
 
       d3.select(shootSVGDoc.rootElement).append("svg:circle")
-        .attr("cx", (clickX / layer1.width) * 498.90457)
-        .attr("cy", ((maxHeight-clickY) / layer1.height) * 489.37781)
+        .attr("cx", (clickX / layer1.width) * 696)
+        .attr("cy", ((maxHeight-(clickY+minHeight)) / layer1.height) * 508)
         .attr("r", 10)
         .attr("id", "shootPosition")
         .attr("style", "cursor:crosshair;fill: #ff6600; fill-opacity: 1; fill-rule: nonzero; stroke: #000000; stroke-width: 6.58412218; stroke-linecap: round; stroke-linejoin: bevel; stroke-miterlimit: 4; stroke-opacity: 1; stroke-dasharray: none; stroke-dashoffset: 0; stroke-width: 3px;");
@@ -1266,6 +1337,9 @@ function clearBreach(){
   BREACH_MAP_FILTER = "origin";
 }
 function handleKeypress(e){
+    if(e.srcElement.tagName == "INPUT"){
+      return;
+    }
     if(e.code.indexOf("Digit") > -1){
       var index = parseInt(e.code.substring(e.code.length -1)) -1;
       $("#taskSwitcher > div").eq(index).trigger("click");
