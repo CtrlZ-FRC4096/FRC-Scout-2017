@@ -1026,7 +1026,7 @@ function shootSVGDocClick(e) {
     }
     else {
       actualClickXInches = HALF_FIELD_LENGTH_INCHES - clickXInches;
-      actualClickYInches = HALF_FIELD_HEIGHT_INCHES - clickYInches;
+      actualClickYInches = clickYInches;
     }
     if (shootSVGDoc.getElementById("shootPosition")) {
       d3.select(shootSVGDoc.getElementById("shootPosition"))
