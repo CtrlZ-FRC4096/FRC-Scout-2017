@@ -23,10 +23,6 @@ class Match {
   public function __construct($matchNumber,$compID){
 
     $this->helper = new Helper();
-    $this->defenses = array();
-
-
-
     if(!is_null($matchNumber)){
       $this->matchNumber = $matchNumber;
       $this->compID = $compID;
@@ -42,56 +38,11 @@ class Match {
     $params = array(":matchNumber" => $this->matchNumber,":compID" => $this->compID);
     $result = $this->helper->queryDB($query,$params,false);
     $this->id = $result[0]['id'];
-    $this->getDefenses();
     $this->claimedTeams = $this->getClaimedTeams();
     $this->teams = $this->getTeams();
   }
 
-  public function getDefenses(){
-    $query = "SELECT mD.side, mD.slot, d.id, d.name, d.category, d.img
-              FROM  `matchDefenses` mD
-              JOIN defenses d ON mD.defenseID = d.id
-              WHERE mD.matchID = :id ";
 
-    $params = array(":id" => $this->id);
-    $result = $this->helper->queryDB($query,$params,false);
-
-    foreach($result as $row){
-
-      $defense = new MatchDefense();
-      $defense->side = $row['side'];
-      $defense->slot = $row['slot'];
-      $defense->id = $row['id'];
-      $defense->name = $row['name'];
-      $defense->category = $row['category'];
-      $defense->img = $row['img'];
-      $defense->matchID = $this->id;
-
-      array_push($this->defenses, $defense);
-
-    }
-
-  }
-
-  public function getDefenseAt($side,$slot){
-
-    foreach($this->defenses as $defense){
-
-      if($defense->side == $side && $defense->slot == $slot){
-        return $defense;
-      }
-    }
-    return null;
-  }
-
-  public function deleteAllDefenses(){
-    $query = "DELETE FROM matchDefenses WHERE matchID = :id";
-    $params = array(
-      ":id" => $this->id
-    );
-    $result = $this->helper->queryDB($query,$params,true);
-    return $result;
-  }
 
   public function getClaimedTeams(){
     $query = "SELECT teamNumber
@@ -144,26 +95,6 @@ class Match {
     $params = array(":id" => $this->id,":teamNumber" => $teamNumber, ":deviceID" => $deviceID,":scouterName" => $scouterName);
     $result = $this->helper->queryDB($query,$params, true);
     return $result;
-  }
-
-  public function isConfigured(){
-    $query = "SELECT * FROM matchDefenses WHERE matchID = :matchID";
-    $params = array(":matchID" => $this->id);
-    $result1 = $this->helper->queryDB($query,$params, false);
-
-
-    $query = "SELECT * FROM teammatches WHERE matchID = :matchID";
-    $params = array(":matchID" => $this->id);
-    $result2 = $this->helper->queryDB($query,$params, false);
-
-    if(count($result1) >= 8 && count($result2) >= 6){
-      return true;
-    }
-    else{
-      return false;
-    }
-
-
   }
 
   function deleteData($teamNumber){
@@ -255,9 +186,11 @@ class Match {
       SELECT teamNumber FROM teamMatches
 
               JOIN (
-                SELECT teamMatchID FROM matchBreaches UNION
+                SELECT teamMatchID FROM matchGears UNION
                 SELECT teamMatchID FROM matchClimbs UNION
-                SELECT teamMatchID FROM matchFeeds UNION
+                SELECT teamMatchID FROM matchballfeeds UNION
+                SELECT teamMatchID FROM matchgearfeeds UNION
+                SELECT teamMatchID FROM matchautos UNION
                 SELECT teamMatchID FROM matchShoots
               ) as a
 

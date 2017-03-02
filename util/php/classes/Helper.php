@@ -24,7 +24,7 @@ class Helper {
        $username = 'user';
        $password = 'user';
 
-    $dbname = 'scouting2017';
+    $dbname = 'scouting2017_v2';
     try {
       $mycon = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
       $mycon->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -51,6 +51,7 @@ class Helper {
       $stmt->execute();
     } catch (PDOException $e) {
       // echo $e->getMessage();
+      echo "<h2 style='color:red'>ERROR!</h2>";
       echo $e->getMessage();
       return $e;
     }

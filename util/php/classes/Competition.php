@@ -57,10 +57,12 @@ class Competition {
 
     $query = "  SELECT MAX(matches.matchNumber) as matchNumber
                 FROM(
-                    SELECT teamMatchID FROM matchBreaches UNION
-                    SELECT teamMatchID FROM matchClimbs UNION
-                    SELECT teamMatchID FROM matchFeeds UNION
-                    SELECT teamMatchID FROM matchShoots
+                  SELECT teamMatchID FROM matchGears UNION
+                  SELECT teamMatchID FROM matchClimbs UNION
+                  SELECT teamMatchID FROM matchballfeeds UNION
+                  SELECT teamMatchID FROM matchgearfeeds UNION
+                  SELECT teamMatchID FROM matchautos UNION
+                  SELECT teamMatchID FROM matchShoots
                 ) as a
                 JOIN teammatches ON teammatches.id = a.teamMatchID
                 JOIN matches ON matches.id = teammatches.matchID
