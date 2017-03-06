@@ -7,6 +7,7 @@ $currCompetition = $helper->getCurrentCompetition();
 if(isset($_COOKIE['deviceID'])){
 
   $status = $helper->getCurrentStatusOfUser($_COOKIE['deviceID'],$currCompetition->id);
+//  echo $status;
   if(strpos($status ,"teamSelection") !== false){
 
     unset($_COOKIE["matchData"]);
@@ -27,6 +28,7 @@ if(isset($_COOKIE['deviceID'])){
   else{
     $arr = explode("-",$status);
     $match = new Match(intval($arr[1]),intval($currCompetition->id));
+//    var_dump($match);
       require_once("matchScouting.php");
   }
 

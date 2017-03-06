@@ -1,0 +1,13 @@
+teampit
+------------
+ = ballCapacity
+ = abilityToAddClimber?
+matchballfeeds_preprocess
+------------
+ = count
+
+
+Add validation for ratings on front end
+Fix front end bugs
+make inputs on frontend autofocus
+Finish Backend

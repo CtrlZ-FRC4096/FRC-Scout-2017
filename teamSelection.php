@@ -94,7 +94,7 @@ $CURR_MATCH = null;
       <select id="scouters">
         <?php
           foreach($helper->getScouters() as $scouter){
-            echo "<option value='$scouter'>" . $scouter . "</option>";
+            echo "<option value='{$scouter['id']}'>" . $scouter['name'] . "</option>";
           }
         ?>
       </select>
@@ -189,7 +189,7 @@ $CURR_MATCH = null;
 
       $.ajax({
         type: "POST",
-        data: {matchNumber:$("#matchSwitcher").val(), compID: <?=$currCompetition->id?>, teamNumber:$("#teamSelection").val(),scouterName:$("#scouters").val()},
+        data: {matchNumber:$("#matchSwitcher").val(), compID: <?=$currCompetition->id?>, teamNumber:$("#teamSelection").val(),scouterID:$("#scouters").val()},
         url: "/util/php/serve/claimTeam.php",
         success: function (data) {
           if(data=="success"){

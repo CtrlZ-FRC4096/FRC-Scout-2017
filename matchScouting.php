@@ -244,7 +244,10 @@ if($RESUMING_MATCH){
                border-right: 2px solid black;
              }
             #feedBallPercentageAfter input, #feedBallPercentageBefore input, #feedBallAmount input{
-              font-weight:bold;text-align: center;width:80%;margin: 0 auto;height: 70%;flex: 0 1 60px;outline:none;border:none;
+              font-weight:bold;text-align: center;width:80%;outline:none;border:none;padding: 0;
+            }
+            #feedBallPercentageAfter span.ui-spinner, #feedBallPercentageBefore span.ui-spinner, #feedBallAmount span.ui-spinner{
+              height: 100%; display: flex;
             }
           </style>
 
@@ -970,6 +973,8 @@ var climbTimer;
   })
 });
 $(window).on('load', function () {
+
+  $("#feedBallPercentageBefore input").spinner();
 
   // Get the Object by ID
   var a = document.getElementById("gearSVG");
