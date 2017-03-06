@@ -71,28 +71,6 @@ class Helper {
     }
   }
 
-  public function getDefensesByCategory(){
-
-    $query = "SELECT * FROM defenses WHERE category = :cat";
-    $params = array(":cat" => "A");
-    $ADefenses = $this->queryDB($query,$params,false);
-    $params = array(":cat" => "B");
-    $BDefenses = $this->queryDB($query,$params,false);
-    $params = array(":cat" => "C");
-    $CDefenses = $this->queryDB($query,$params,false);
-    $params = array(":cat" => "D");
-    $DDefenses = $this->queryDB($query,$params,false);
-
-    $arr = array(
-      "A" => $ADefenses,
-      "B" => $BDefenses,
-      "C" => $CDefenses,
-      "D" => $DDefenses);
-
-    return $arr;
-
-  }
-
   public function getCurrentCompetition(){
 
     $query = "SELECT id FROM competitions WHERE current = 1 LIMIT 0,1";
@@ -156,7 +134,8 @@ class Helper {
 
 
   public function getCurrentStatusOfUser($deviceID, $compID){
-    $query = "SELECT * FROM teammatches
+    $query = "SELECT *
+              FROM teammatches
               JOIN matches ON matches.id = teammatches.matchID
               WHERE deviceID = :deviceID
               AND matches.compID = :compID
@@ -193,13 +172,7 @@ class Helper {
     $query = "SELECT * FROM scouters";
     $params = null;
     $result = $this->queryDB($query,$params,false);
-    $arr = array();
-
-    foreach($result as $row){
-      array_push($arr,$row['scouterName']);
-
-    }
-    return $arr;
+    return $result;
     }
 
 

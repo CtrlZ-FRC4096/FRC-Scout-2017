@@ -90,9 +90,9 @@ class Match {
 
   }
 
-  public function claimTeam($teamNumber,$deviceID,$scouterName){
-    $query = "UPDATE teammatches SET deviceID = :deviceID, scouterName = :scouterName WHERE matchID = :id AND teamNumber = :teamNumber";
-    $params = array(":id" => $this->id,":teamNumber" => $teamNumber, ":deviceID" => $deviceID,":scouterName" => $scouterName);
+  public function claimTeam($teamNumber,$deviceID,$scouterID){
+    $query = "UPDATE teammatches SET deviceID = :deviceID, scouterID = :scouterID WHERE matchID = :id AND teamNumber = :teamNumber";
+    $params = array(":id" => $this->id,":teamNumber" => $teamNumber, ":deviceID" => $deviceID,":scouterID" => $scouterID);
     $result = $this->helper->queryDB($query,$params, true);
     return $result;
   }
@@ -104,11 +104,10 @@ class Match {
     $result = $this->helper->queryDB($query,$params,false);
     $teamMatchID = $result[0]['id'];
 
-
     $this->helper->con = $this->helper->connectToDB();
     $this->helper->con->beginTransaction();
 
-    $types = array("feed" => "feeds","breach"=>"breaches","shoot" => "shoots", "climb" => "climbs");
+    $types = array("ballfeed" => "ballfeeds","gearfeed" => "gearfeeds","gear"=>"gears","shoot" => "shoots", "climb" => "climbs","auto" => "autos","rating" => "ratings");
     $params = array(":teamMatchID" => $teamMatchID);
 
     foreach($types as $eventType => $tableName){
@@ -140,7 +139,7 @@ class Match {
               SET deviceID = '',
                   collectionEnded = 0,
                   collectionStarted = 0,
-                  scouterName = ''
+                  scouterID = null
               WHERE matchID = :matchID
               AND teamNumber = :teamNumber";
     $params = array(":matchID" => $this->id, ":teamNumber" =>$teamNumber);
@@ -165,7 +164,7 @@ class Match {
   }
 
   public function getClaimedTeamMatchForDevice($deviceID){
-    $query = "SELECT * FROM teamMatches WHERE matchID = :matchID AND deviceID = :deviceID";
+    $query = "SELECT * FROM teamMatches WHERE matchID = :matchID AND deviceID = :deviceID AND collectionEnded = 0;";
     $params = array(":matchID" => $this->id,
                     ":deviceID" => $deviceID);
 
