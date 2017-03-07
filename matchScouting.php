@@ -113,6 +113,10 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
       margin-bottom: 30px;
     }
 
+    .keyboard_shortcut{
+      text-decoration: underline;
+    }
+
   </style>
 
 </head>
@@ -193,10 +197,10 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
             <div
               style="cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;">
               <div id="gearScore" style="display:flex;align-items:center;flex: 1;border-right: 2px solid black">
-                <h2 style="font-weight:bold;flex: 1;text-align: center">Score</h2>
+                <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">S</span>core</h2>
               </div>
               <div id="gearMiss" style="display:flex;align-items:center;flex: 1">
-                <h2 style="font-weight:bold;flex: 1;text-align: center">Miss</h2>
+                <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">M</span>iss</h2>
               </div>
             </div>
 
@@ -256,10 +260,10 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
           <div id="feedBody" style="">
             <div id="feedTypeSwitcher" style="">
               <div id="feedBallOption" style="">
-                <h2 style="font-weight:bold;flex: 1;text-align: center">Ball</h2>
+                <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">B</span>all</h2>
               </div>
               <div id="feedGearOption" style="">
-                <h2 style="font-weight:bold;flex: 1;text-align: center">Gear</h2>
+                <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">G</span>ear</h2>
               </div>
             </div>
             <div id="feedBall" style="display: none">
@@ -267,7 +271,7 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
                 <h2 style=" margin: 0;text-align:center ">Percentage of Robot's Ball Pit:</h2>
                 <div id="feedBallPercentageOptions" style="">
                   <div id="feedBallPercentageBefore" style="/">
-                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="Before %">
+                    <input autofocus maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="Before %">
                   </div>
                   <div id="feedBallPercentageAfter" style="/">
                     <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="After %">
@@ -282,7 +286,7 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
                 <h2 style=" margin: 0;text-align:center;">Number of Balls Fed:</h2>
                 <div id="feedBallCountOptions" style="">
                   <div id="feedBallAmount" style="/">
-                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" step="1" placeholder="50">
+                    <input autofocus maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" step="1" placeholder="50">
                   </div>
                 </div>
                 <a id="submitFeedBallCount"
@@ -295,18 +299,18 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
             <div id="feedGear" style="display:none">
               <div id="feedGearOutcomeOptions" style="">
                 <div id="feedGearSuccess" style="">
-                  <h2 style="font-weight:bold;flex: 1;text-align: center">Success</h2>
+                  <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">S</span>uccess</h2>
                 </div>
                 <div id="feedGearFailure" style="">
-                  <h2 style="font-weight:bold;flex: 1;text-align: center">Failure</h2>
+                  <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">F</span>ailure</h2>
                 </div>
               </div>
               <div id="feedGearMethodOptions" style="">
                 <div id="feedGearDropped" style="">
-                  <h2 style="font-weight:bold;flex: 1;text-align: center">Dropped In</h2>
+                  <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">D</span>ropped In</h2>
                 </div>
                 <div id="feedGearGround" style="">
-                  <h2 style="font-weight:bold;flex: 1;text-align: center">From Ground</h2>
+                  <h2 style="font-weight:bold;flex: 1;text-align: center">From G<span class="keyboard_shortcut">r</span>ound</h2>
                 </div>
               </div>
             </div>
@@ -363,17 +367,17 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
           <div id="shootBody" style="">
             <div id="shootLevel" style="">
               <div id="shootHighOption" style="">
-                <h2 style="font-weight:bold;flex: 1;text-align: center">High</h2>
+                <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">H</span>igh</h2>
               </div>
               <div id="shootLowOption" style="">
-                <h2 style="font-weight:bold;flex: 1;text-align: center">Low</h2>
+                <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">L</span>ow</h2>
               </div>
             </div>
             <div id="shootPercentages"  style="">
               <h2 style=" margin: 0;text-align:center ">Percentage of Robot's Ball Pit:</h2>
               <div id="shootPercentageOptions" style="">
                 <div id="shootPercentageBefore" style="/">
-                  <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5"  placeholder="Before %">
+                  <input autofocus maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5"  placeholder="Before %">
                 </div>
                 <div id="shootPercentageAfter" style="/">
                   <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="After %">
@@ -391,7 +395,7 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
               <h2 style=" margin: 0; text-align:center">Count the balls shot:</h2>
               <div id="shootCountOptions" style="">
                 <div id="shootCountScores" style="/">
-                  <input type="text" style="" onkeypress="return restrictCharacters(this, event, /[0-9]/g);"  placeholder="3 Scores">
+                  <input autofocus type="text" style="" onkeypress="return restrictCharacters(this, event, /[0-9]/g);"  placeholder="3 Scores">
                 </div>
                 <div id="shootCountMisses" style="/">
                   <input type="text" style="" onkeypress="return restrictCharacters(this, event, /[0-9]/g);"  placeholder="4 Misses">
@@ -480,10 +484,17 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
             <div id="defenseEscapeRating" class="rating" ></div>
           </div>
         </div>
+        <div class="col-md-12 col-sm-12" style="display: flex;flex-direction: column">
+          <h3 style="text-align:center;width: 100%">Notes:</h3>
+          <textarea style="width: 70%;margin:0 auto; height: 60px" id="matchNotes"></textarea>
+
+        </div>
+
         <hr style="width: 100%"/>
         <a id="comfirmSubmitMatch" style="margin: 0 auto;" href="#" class="button button-pill button-flat-royal button-large">Submit</a>
 
       </div>
+
     </div>
     <div style="min-width:30%;flex:0 1;display: flex;flex-direction: column;">
       <div style="margin: 15px;flex: 1;display: flex;height: 100%;flex-direction: column;">
@@ -530,6 +541,22 @@ String.prototype.capitalize = function(allWords) {
   this.split(' ').map(word => word.capitalize()).join(' ') : //break down phrase to words then  recursive calls until capitalizing all words
   this.charAt(0).toUpperCase() + this.slice(1); // if allWords is undefined , capitalize only the first word , mean the first char of the whole string
 }
+function triggerKeyboardEvent(el, e){
+  var eventObj = document.createEventObject ?
+    document.createEventObject() : document.createEvent("Events");
+
+  if(eventObj.initEvent){
+    eventObj.initEvent("keyup", true, true);
+  }
+
+  eventObj.keyCode = e.keyCode;
+  eventObj.which = e.keyCode;
+  eventObj.target = el;
+  eventObj.code = e.code;
+
+  el.dispatchEvent ? el.dispatchEvent(eventObj) : el.fireEvent("onkeyup", eventObj);
+
+}
 function restrictCharacters(myfield, e, restrictionType) {
   if (!e) var e = window.event
   if (e.keyCode) code = e.keyCode;
@@ -544,6 +571,7 @@ function restrictCharacters(myfield, e, restrictionType) {
     if (character.match(restrictionType)) {
       return true;
     } else {
+     triggerKeyboardEvent(document.body, e);
       return false;
     }
   }
@@ -586,8 +614,10 @@ $(document).ready(function () {
       $(window).load(function(){
         if(localStorage.getItem("matchData") !== null && localStorage.getItem("matchData") != "") {
           var data = JSON.parse(localStorage.getItem("matchData"));
+          if(data.currMode == "tele"){
+            $("#modeHeading").trigger("click");
+          }
           $("#taskSwitcher > div").eq(data.currTab).trigger("click");
-
           data.actions.sort(
             function compare(a,b) {
               if (a.orderID < b.orderID)
@@ -644,9 +674,6 @@ $(document).ready(function () {
 
           $("#historyList .historyItem[data-mode='"+data.currMode+"']").show();
           $("#historyList .historyItem[data-mode='"+oppMode+"']").hide();
-          if(data.currMode == "tele"){
-            $("#modeHeading").trigger("click");
-          }
 
             $("#reachedLineInAuto").prop("checked",data.otherFields.autoLineCrossed);
             $("#climbSuccess").prop("checked",data.otherFields.climbSuccess);
@@ -669,8 +696,6 @@ $(document).ready(function () {
 
 
   }
-
-
   $(document).keyup(function(e){
     handleKeypress(e.originalEvent);
   });
@@ -710,7 +735,7 @@ $(document).ready(function () {
 
     $("#gearPage,#feedPage,#shootPage,#otherFieldsPage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
     $("#" + $(this).attr("div-id")).css("flex", "0 1 70%").css("width", "").css("height", "").css("overflow", "");
-
+    focusOnAvailableInput();
     generateJSON();
   });
   $("#historyList").on("click", ".deleteHistoryItem", function () {
@@ -729,32 +754,37 @@ $(document).ready(function () {
 
   });
 
-
   $("#shootPage #shootSwitchToPercentage").click(function(){
     $("#shootPage #shootCounts").hide();
     $("#shootPage #shootPercentages").show();
 //    SHOOT_INPUT_METHOD = "percent";
+    focusOnAvailableInput();
   });
   $("#shootPage #shootSwitchToCount").click(function(){
     $("#shootPage #shootCounts").show();
     $("#shootPage #shootPercentages").hide();
 //    SHOOT_INPUT_METHOD = "count";
+    focusOnAvailableInput();
   });
   $("#shootPage #submitShootCount").click(function () {
     var scored = $("#shootCountScores input").val();
     var missed = $("#shootCountMisses input").val();
+    var errors = false;
     if(scored != ""){
       SHOOT_AMT_COUNT_SCORED = scored;
     }
     else{
       toastr["error"]("Please fill out and try again", "A scored count is required!");
+      errors = true;
     }
     if(missed != ""){
       SHOOT_AMT_COUNT_MISSED = missed;
     }
     else{
       toastr["error"]("Please fill out and try again", "A missed count is required!");
+      errors = true;
     }
+    if(errors){return;}
     checkAndAddShootHistoryItem( $("#modeHeading").attr("data-mode"), "count");
     generateJSON();
     checkAutoCount();
@@ -783,6 +813,10 @@ $(document).ready(function () {
     }
     else{
       toastr["error"]("Please fill out and try again", "An Accuracy % is required!");
+      errors = true;
+    }
+    if(parseInt(before) > 100 || parseInt(after) > 100 || parseInt(accuracy) > 100){
+      toastr["error"]("Percents cannot go over 100!");
       errors = true;
     }
     if(errors) {return;}
@@ -848,11 +882,13 @@ $(document).ready(function () {
   $("#feedPage #submitFeedBallPercentage").click(function () {
     var before = $("#feedBallPercentageBefore input").val();
     var after = $("#feedBallPercentageAfter input").val();
+    var errors = false;
     if(before != ""){
       FEED_BALL_PERCENT_START = before != "" ? before: null;
     }
     else{
       toastr["error"]("Please fill out and try again", "A Before % is required!");
+      errors = true;
     }
 
     if(after != ""){
@@ -860,30 +896,37 @@ $(document).ready(function () {
     }
     else{
       toastr["error"]("Please fill out and try again", "An After % is required!");
+      errors = true;
     }
+    if(parseInt(before) > 100 || parseInt(after) > 100){
+      toastr["error"]("Percents cannot go over 100!");
+      errors = true;
+    }
+    if(errors){return;}
     checkAndAddFeedHistoryItem( $("#modeHeading").attr("data-mode"),FEED_TYPE,"percent");
     generateJSON();
     checkAutoCount();
   });
   $("#feedPage #submitFeedBallCount").click(function () {
     var amount = $("#feedBallAmount input").val();
+    var errors = false;
     if(amount != ""){
       FEED_BALL_COUNT = amount != "" ? amount: null;
     }
     else{
       toastr["error"]("Please fill out and try again", "A count is required!");
+      errors = true;
     }
+    if(errors){return;}
     checkAndAddFeedHistoryItem( $("#modeHeading").attr("data-mode"),FEED_TYPE,"count");
     generateJSON();
     checkAutoCount();
   });
-
-
   $("#feedPage #feedBallSwitchToPercentage, #feedPage #feedBallSwitchToCount").click(function(){
     $("#feedPage #feedBallCount").toggle();
     $("#feedPage #feedBallPercentage").toggle();
+    focusOnAvailableInput();
   });
-
   $('#otherFieldsPage #reachedLineInAuto,#otherFieldsPage #climbSuccess').on('click', function(){
     generateJSON();
   });
@@ -1432,19 +1475,21 @@ function generateJSON(){
 
 
   var records = [];
-  var counter = 1;
-  $("#historyList .historyItem[data-mode='auto']").each(function(){
+  var autoElements = $("#historyList .historyItem[data-mode='auto']");
+  var teleElements = $("#historyList .historyItem[data-mode='tele']");
+  var counter = autoElements.length;
+  autoElements.each(function(){
 
-    records.push(getRecord(this,"auto"));
+    records.push(getRecord(this,"auto",counter));
 
-    counter++;
+    counter--;
   });
-  counter = 1;
-  $("#historyList .historyItem[data-mode='tele']").each(function(){
+  counter = teleElements.length;
+  teleElements.each(function(){
 
-    records.push(getRecord(this,"tele"));
+    records.push(getRecord(this,"tele",counter));
 
-    counter++;
+    counter--;
   });
 
   var otherFields = {
@@ -1458,7 +1503,8 @@ function generateJSON(){
     gearLaneFeedingRating:   $("#gearLaneFeedingRating").rateYo("rating"),
     gearPlacingSpeedRating:  $("#gearPlacingSpeedRating").rateYo("rating"),
     defenseRating:           $("#defenseRating").rateYo("rating"),
-    defenseEscapeRating:     $("#defenseEscapeRating").rateYo("rating")
+    defenseEscapeRating:     $("#defenseEscapeRating").rateYo("rating"),
+    notes:                   $("#matchNotes").val()
   };
 
   var matchData = {
@@ -1470,17 +1516,9 @@ function generateJSON(){
     currMode : $("#modeHeading").attr("data-mode"),
     currTab : $("#taskSwitcher div.active").index()
   };
-
-  var j = 1;
-  for(var i = records.length - 1 ; i >= 0;i--){
-    records[i].orderID = j;
-    j++;
-  }
-
-
   localStorage.setItem("matchData",JSON.stringify(matchData));
 
-  function getRecord(e,mode){
+  function getRecord(e,mode,orderID){
     var record = {};
 
     record.mode= mode;
@@ -1489,7 +1527,7 @@ function generateJSON(){
       case "gear":
         record.location = $(e).attr("data-location");
         record.scoreMiss = $(e).attr("data-scoreMiss");
-        record.orderID = counter;
+        record.orderID = orderID;
         record.eventType = "gear";
         break;
       case "feedBall":
@@ -1498,13 +1536,13 @@ function generateJSON(){
         record.after = (record.inputMethod == "percent" ? $(e).attr("data-after") : null);
         record.count = (record.inputMethod == "count" ? $(e).attr("data-count") : null);
         record.location = $(e).attr("data-location");
-        record.orderID = counter;
+        record.orderID = orderID;
         record.eventType = "feedBall";
         break;
       case "feedGear":
         record.result = $(e).attr("data-result");
         record.method = $(e).attr("data-method");
-        record.orderID = counter;
+        record.orderID = orderID;
         record.eventType = "feedGear";
         break;
       case "shoot":
@@ -1517,7 +1555,7 @@ function generateJSON(){
         record.accuracy = (record.inputMethod == "percent" ? $(e).attr("data-accuracy") : null)
         record.scored = (record.inputMethod == "count" ? $(e).attr("data-scored") : null);
         record.missed = (record.inputMethod == "count" ? $(e).attr("data-missed") : null);
-        record.orderID = counter;
+        record.orderID = orderID;
         record.eventType = "shoot";
         break;
       default:
@@ -1577,24 +1615,94 @@ function clearFeed(){
   FEED_GEAR_METHOD = null;
 }
 function handleKeypress(e){
-    if(e.srcElement.tagName == "INPUT"){
+    if(e.target.tagName == "INPUT" || e.target.tagName == "TEXTAREA"){
       return;
     }
     if(e.code.indexOf("Digit") > -1){
-      var index = parseInt(e.code.substring(e.code.length -1)) -1;
-      $("#taskSwitcher > div").eq(index).trigger("click");
+      handleTabSwitchKeyPress(e);
     }
     else  if (e.keyCode == 27) { // escape key maps to keycode `27`
-      if($("#gearPage").width() > 0){
-        $("#cancelGear").trigger("click");
-      }
-      else if($("#shootPage").width() > 0){
-        $("#cancelShoot").trigger("click");
-      }
+      handleEscapeKeyPress(e);
     }
     else if (e.keyCode == 90 && e.ctrlKey){ //Ctrl-Z!
       $("#historyList div.historyItem").eq(0).find(".deleteHistoryItem").trigger("click")
     }
+    else if($("#feedPage").css("flex-basis") != "0%"){
+      handleFeedPageKeyPress(e);
+    }
+    else if($("#gearPage").css("flex-basis") != "0%"){
+      handleGearPageKeyPress(e);
+    }
+    else if($("#shootPage").css("flex-basis") != "0%"){
+      handleShootPageKeyPress(e);
+    }
+}
+function handleTabSwitchKeyPress(e){
+  var index = parseInt(e.code.substring(e.code.length -1)) -1;
+  $("#taskSwitcher > div").eq(index).trigger("click");
+}
+function handleEscapeKeyPress(){
+  if($("#gearPage").is(":visible")){
+    $("#cancelGear").trigger("click");
+  }
+  else if($("#feedPage").is(":visible")){
+    $("#cancelFeed").trigger("click");
+  }
+  else if($("#shootPage").is(":visible")){
+    $("#cancelShoot").trigger("click");
+  }
+}
+function handleFeedPageKeyPress(e){
+  var char = String.fromCharCode(e.keyCode).toUpperCase();
+  if(char == "B"){
+    $("#feedPage #feedBallOption").trigger("click");
+  }
+  else if(char == "G"){
+    $("#feedPage #feedGearOption").trigger("click");
+  }
+  if($("#feedPage #feedGear").is(":visible")){
+    if(char == "S"){
+      $("#feedPage #feedGearSuccess").trigger("click");
+    }
+    else if(char == "F"){
+      $("#feedPage #feedGearFailure").trigger("click");
+    }
+    else if(char == "D"){
+      $("#feedPage #feedGearDropped").trigger("click");
+    }
+    else if(char == "R"){
+      $("#feedPage #feedGearGround").trigger("click");
+    }
+  }
+}
+function handleGearPageKeyPress(e){
+  var char = String.fromCharCode(e.keyCode).toUpperCase();
+  if(char == "S"){
+    $("#gearPage #gearScore").trigger("click");
+  }
+  else if(char == "M"){
+    $("#gearPage #gearMiss").trigger("click");
+  }
+}
+function handleShootPageKeyPress(e){
+  var char = String.fromCharCode(e.keyCode).toUpperCase();
+  if(char == "H"){
+    $("#shootPage #shootHighOption").trigger("click");
+  }
+  else if(char == "L"){
+    $("#shootPage #shootLowOption").trigger("click");
+  }
+}
+function focusOnAvailableInput(){
+  var currentDiv = $("#taskSwitcher div.active").attr("div-id")
+  var el = $("#" + currentDiv + " input[autofocus]:visible").get(0);
+  if(el == undefined){
+    document.body.focus();
+  }
+  else{
+    el.focus();
+  }
+
 }
 </script>
 </html>
