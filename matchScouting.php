@@ -8,12 +8,12 @@
 $SCOUTING_TEAM_MATCH = $match->getClaimedTeamMatchForDevice($_COOKIE['deviceID']);
 $SCOUTING_TEAM = $SCOUTING_TEAM_MATCH['teamNumber'];
 $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
-if (isset($_COOKIE['matchData'])) {
-  $RESUMING_MATCH = true;
-} else {
-  $RESUMING_MATCH = false;
+//if (isset($_COOKIE['matchData'])) {
+//  $RESUMING_MATCH = true;
+//} else {
+//  $RESUMING_MATCH = false;
   $helper->setCollectionStarted($match->id, $SCOUTING_TEAM);
-}
+//}
 ?>
 <!DOCTYPE HTML>
 <html style="overflow-x: hidden">
@@ -84,11 +84,7 @@ if (isset($_COOKIE['matchData'])) {
     .toast-warning, .toast-error{
       opacity: 1 !important;
     }
-    .toast{
-      -webkit-box-shadow: 0px 0px 99px 15px rgba(0,0,0,0.83) !important;
-      -moz-box-shadow: 0px 0px 99px 15px rgba(0,0,0,0.83) !important;
-      box-shadow: 0px 0px 99px 15px rgba(0,0,0,0.83) !important;
-    }
+
 
 
     g{
@@ -113,23 +109,30 @@ if (isset($_COOKIE['matchData'])) {
       padding-right: 20px;
     }
 
+    #ratingsContainer > div {
+      margin-bottom: 30px;
+    }
+
   </style>
 
 </head>
-<?php
-if($RESUMING_MATCH){
-?>
 <div id="resumingMatchNotice" style="
+      display:none;
       position: absolute;
       width: 100%;
       height: 100%;
       background-color: white;
-      display: flex;
       align-items: center;
       z-index: 15;">
   <h2 style="width: 100%;text-align: center;font-size: 50px">Resuming Match...</h2>
 </div>
-<?php } ?>
+<script>
+  if(localStorage.getItem("matchData") !== null && localStorage.getItem("matchData") != "" ) {
+
+    $("#resumingMatchNotice").css("display","flex");
+
+  }
+</script>
 <div id="redirectingNotice" style="
       position: absolute;
       width: 100%;
@@ -204,7 +207,7 @@ if($RESUMING_MATCH){
 
       </div>
     </div>
-    <div id="feedPage" style="display:flex;flex: 0 1 70%;width: 0;height: 0;overflow: hidden">
+    <div id="feedPage" style="display:flex;flex: 0 1 0%;width: 0;height: 0;overflow: hidden">
 
       <div style="margin: 15px;flex: 1; display: flex;">
         <div style="display: flex;flex-direction: row;width: 60%;">
@@ -264,10 +267,10 @@ if($RESUMING_MATCH){
                 <h2 style=" margin: 0;text-align:center ">Percentage of Robot's Ball Pit:</h2>
                 <div id="feedBallPercentageOptions" style="">
                   <div id="feedBallPercentageBefore" style="/">
-                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="text" style="" placeholder="Before %">
+                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="Before %">
                   </div>
                   <div id="feedBallPercentageAfter" style="/">
-                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="text" style="" placeholder="After %">
+                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="After %">
                   </div>
                 </div>
                 <a id="submitFeedBallPercentage"
@@ -279,7 +282,7 @@ if($RESUMING_MATCH){
                 <h2 style=" margin: 0;text-align:center;">Number of Balls Fed:</h2>
                 <div id="feedBallCountOptions" style="">
                   <div id="feedBallAmount" style="/">
-                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="text" style="" placeholder="50">
+                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" step="1" placeholder="50">
                   </div>
                 </div>
                 <a id="submitFeedBallCount"
@@ -312,7 +315,7 @@ if($RESUMING_MATCH){
       </div>
 
     </div>
-    <div id="shootPage" style="display:flex;flex: 0 1 70%;width: 0;height: 0;overflow: hidden;flex-direction:column;">
+    <div id="shootPage" style="display:flex;flex: 0 1 0%;width: 0;height: 0;overflow: hidden;flex-direction:column;">
 
       <div style="margin: 15px;flex: 1; display: flex;">
         <div style="display: flex;flex-direction: row;width: 60%;">
@@ -366,17 +369,17 @@ if($RESUMING_MATCH){
                 <h2 style="font-weight:bold;flex: 1;text-align: center">Low</h2>
               </div>
             </div>
-            <div id="shootPercentages"  style="display:none">
+            <div id="shootPercentages"  style="">
               <h2 style=" margin: 0;text-align:center ">Percentage of Robot's Ball Pit:</h2>
               <div id="shootPercentageOptions" style="">
                 <div id="shootPercentageBefore" style="/">
-                  <input maxlength="3" type="text" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" style="" placeholder="Before %">
+                  <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5"  placeholder="Before %">
                 </div>
                 <div id="shootPercentageAfter" style="/">
-                  <input maxlength="3" type="text" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" style="" placeholder="After %">
+                  <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="After %">
                 </div>
                 <div id="shootPercentageAccuracy" style="/">
-                  <input maxlength="3" type="text" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" style="" placeholder="Acc. %">
+                  <input maxlength="3"  onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="Acc. %">
                 </div>
               </div>
               <a id="submitShootPercentages"
@@ -384,7 +387,7 @@ if($RESUMING_MATCH){
                  class="button button-pill button-primary ">Add</a>
               <a id="shootSwitchToCount" style="color:#4d00ff; margin-top: 15px; text-align:right">Give Count</a>
             </div>
-            <div id="shootCounts">
+            <div id="shootCounts" style="display:none">
               <h2 style=" margin: 0; text-align:center">Count the balls shot:</h2>
               <div id="shootCountOptions" style="">
                 <div id="shootCountScores" style="/">
@@ -404,20 +407,21 @@ if($RESUMING_MATCH){
         </div>
       </div>
     </div>
-    <div id="otherFieldsPage" style="flex-direction: column; display: flex; flex: 0 1 70%;width: 0;height: 0;overflow: hidden;align-items: center;">
+    <div id="otherFieldsPage" style="flex-direction: column; display: flex; flex: 0 1 0%;width: 0;height: 0;overflow: hidden;align-items: center;">
 
       <div style="align-self: flex-start;margin: 0 auto;width:100%;padding-left: 50px;">
-        <div style="width:50%;float:left">
+        <div style="width:65%;float:left">
           <h3 style="font-weight: bold;font-size: 1.5vw">
             Climb Time - <span id="climbTimer">0:00 mins</span>
             <a id="startClimbTimer" style="margin: 0 auto;" href="#" class="button button-flat-action ">Start</a>
             <a id="endClimbTimer" style="margin: 0 auto;" href="#" class="button button-flat-caution disabled ">Stop</a>
+            <a id="clearClimbTimer" style="margin: 0 auto;" href="#" class="button button-flat-caution disabled ">Clear</a>
           </h3>
           <h3 style="font-weight: bold;font-size: 1.5vw">
             <input style="width: 20px;height: 20px" type="checkbox" id="reachedLineInAuto"> <label for="reachedLineInAuto">Reached Line in Auto?</label>
           </h3>
         </div>
-        <div style="width:50%;float:right">
+        <div style="width:35%;float:right">
 
           <h3 style="font-weight: bold;font-size: 1.5vw">
             <input style="width: 20px;height: 20px" type="checkbox" id="climbSuccess"> <label for="climbSuccess">Reached Touchpad?</label>
@@ -426,7 +430,7 @@ if($RESUMING_MATCH){
 
       </div>
 
-      <div class="row" style="margin-top:20px;margin-bottom:10px;width: 100%;">
+      <div class="row" style="margin-top:20px;margin-bottom:10px;width: 100%;" id="ratingsContainer">
         <div class="col-md-3 col-sm-6" style="display: flex">
           <div style="margin: 0 auto;width: 95%">
             <h4 style="text-align: center;margin-top: 0">Ball Feeding (Ground):</h4>
@@ -439,18 +443,19 @@ if($RESUMING_MATCH){
             <div id="ballLaneFeedingRating" class="rating" ></div>
           </div>
         </div>
-        <div class="col-md-3 col-sm-6" style="display: flex">
-          <div style="margin: 0 auto;width: 95%">
-            <h4 style="text-align: center;margin-top: 0">Ball Shooting Accuracy:</h4>
-            <div id="shootingAccuracyRating" class="rating" ></div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6" style="display: flex">
+        <div class="col-md-3 col-sm-6" style="display: flex;border-right: 1px solid black">
           <div style="margin: 0 auto;width: 95%">
             <h4 style="text-align: center;margin-top: 0">Ball Shooting Speed:</h4>
-            <div id="shootingSpeedRating" class="rating" ></div>
+            <div id="ballShootingSpeedRating" class="rating" ></div>
           </div>
         </div>
+        <div class="col-md-3 col-sm-6" style="display: flex">
+          <div style="margin: 0 auto;width: 95%">
+            <h4 style="text-align: center;margin-top: 0">Ability to Defend: </h4>
+            <div id="defenseRating" class="rating" ></div>
+          </div>
+        </div>
+
         <div class="col-md-3 col-sm-6" style="display: flex">
           <div style="margin: 0 auto;width: 95%">
             <h4 style="text-align: center;margin-top: 0">Gear Feeding (Ground):</h4>
@@ -463,22 +468,10 @@ if($RESUMING_MATCH){
             <div id="gearLaneFeedingRating" class="rating" style="width: 100%;margin: 0 auto"></div>
           </div>
         </div>
-        <div class="col-md-3 col-sm-6" style="display: flex">
-          <div style="margin: 0 auto;width: 95%">
-            <h4 style="text-align: center;margin-top: 0">Gear Placing Accuracy:</h4>
-            <div id="gearPlacingAccuracyRating" class="rating"  ></div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6" style="display: flex">
+        <div class="col-md-3 col-sm-6" style="display: flex;border-right: 1px solid black">
           <div style="margin: 0 auto;width: 95%">
             <h4 style="text-align: center;margin-top: 0">Gear Placing Speed:</h4>
             <div id="gearPlacingSpeedRating" class="rating" ></div>
-          </div>
-        </div>
-        <div class="col-md-3 col-sm-6 col-md-offset-3" style="display: flex">
-          <div style="margin: 0 auto;width: 95%">
-            <h4 style="text-align: center;margin-top: 0">Ability to Defend: </h4>
-            <div id="defenseRating" class="rating" ></div>
           </div>
         </div>
         <div class="col-md-3 col-sm-6" style="display: flex">
@@ -581,18 +574,18 @@ var FEED_BALL_COUNT = null;
 var FEED_GEAR_RESULT = null;
 var FEED_GEAR_METHOD = null;
 
-var RESUMING_MATCH = <?=($RESUMING_MATCH ? "true" : "false")?>;
+var RESUMING_MATCH =localStorage.getItem("matchData") !== null && localStorage.getItem("matchData") != "";
 var LEFT_TEAM_COLOR = "<?=($helper->LEFT_TEAM)?>";
 
 var feedSVG_IDS = ["overflowHolder","returnFarHolder","returnCloseHolder","boilerSideCloseHolder","boilerSideMiddleHolder","boilerSideFarHolder","loadingSideCloseHolder","loadingSideFarHolder"]
 $(document).ready(function () {
   if (!RESUMING_MATCH) {
-    $.cookie("matchData", "", {expires: 3650, path: '/'});
+    localStorage.setItem("matchData", "");
   }
   else{
       $(window).load(function(){
-        if($.cookie("matchData") != "") {
-          var data = JSON.parse($.cookie("matchData"));
+        if(localStorage.getItem("matchData") !== null && localStorage.getItem("matchData") != "") {
+          var data = JSON.parse(localStorage.getItem("matchData"));
           $("#taskSwitcher > div").eq(data.currTab).trigger("click");
 
           data.actions.sort(
@@ -655,16 +648,17 @@ $(document).ready(function () {
             $("#modeHeading").trigger("click");
           }
 
-          $("#offensiveRating").rateYo("rating" , data.otherFields.offensiveRating);
-          $("#defensiveRating").rateYo("rating" , data.otherFields.defensiveRating);
-          if(data.otherFields.batterReached == "true"){
-            $("#reachedBatter").trigger("click");
-          }
-          if(data.otherFields.success == "true"){
-            $("#climbSuccess").trigger("click");
-          }
-
-          $("#climbTimer").text(data.otherFields.duration + " mins");
+            $("#reachedLineInAuto").prop("checked",data.otherFields.autoLineCrossed);
+            $("#climbSuccess").prop("checked",data.otherFields.climbSuccess);
+            $("#ballGroundFeedingRating").rateYo("rating", data.otherFields.ballGroundFeedingRating);
+            $("#ballLaneFeedingRating").rateYo("rating", data.otherFields.ballLaneFeedingRating);
+            $("#ballShootingSpeedRating").rateYo("rating", data.otherFields.ballShootingSpeedRating);
+            $("#gearGroundFeedingRating").rateYo("rating", data.otherFields.gearGroundFeedingRating);
+            $("#gearLaneFeedingRating").rateYo("rating", data.otherFields.gearLaneFeedingRating);
+            $("#gearPlacingSpeedRating").rateYo("rating", data.otherFields.gearPlacingSpeedRating);
+            $("#defenseRating").rateYo("rating", data.otherFields.defenseRating);
+            $("#defenseEscapeRating").rateYo("rating", data.otherFields.defenseEscapeRating);
+            $("#climbTimer").text(data.otherFields.duration + " mins");
           generateJSON();
 
         }
@@ -916,12 +910,19 @@ var climbTimer;
     if($(this).hasClass("disabled")){return;}
     $(this).addClass("disabled");
     $("#otherFieldsPage #startClimbTimer").removeClass("disabled");
-
+    $("#otherFieldsPage #clearClimbTimer").removeClass("disabled");
     clearInterval(climbTimer);
       generateJSON()
   });
 
-  $("#modeHeading").click(function(){
+  $("#otherFieldsPage #clearClimbTimer").click(function() {
+    if($(this).hasClass("disabled")){return;}
+    $(this).addClass("disabled");
+    $("#climbTimer").text( "0:00 mins");
+    generateJSON();
+  });
+
+    $("#modeHeading").click(function(){
     var currMode = $(this).attr("data-mode");
 
     if(currMode == "auto"){
@@ -945,12 +946,12 @@ var climbTimer;
     $.ajax({
       type: "POST",
       url: "/util/php/serve/addMatchData.php",
-      data: {data: $.cookie("matchData")},
+      data: {data: localStorage.getItem("matchData")},
       async: false,
       success: function (data) {
         if(data == "Success"){
           toastr["success"]("The match has been updated successfully", "Success!")
-          $.removeCookie('matchData', { path: '/' });
+          localStorage.removeItem('matchData');
           $("#redirectingNotice").css("display","flex");
           location.reload();
         }
@@ -1062,7 +1063,7 @@ $(window).on('load', function () {
   $("#gearPage,#feedPage,#shootPage,#otherFieldsPage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
   $("#otherFieldsPage").css("flex", "0 1 70%").css("width", "").css("height", "").css("overflow", "");
 
-  var ids = ["ballGroundFeedingRating","ballLaneFeedingRating","shootingAccuracyRating","shootingSpeedRating","gearGroundFeedingRating","gearLaneFeedingRating","gearPlacingAccuracyRating","gearPlacingSpeedRating","defenseRating","defenseEscapeRating"];
+  var ids = ["ballGroundFeedingRating","ballLaneFeedingRating","ballShootingSpeedRating","gearGroundFeedingRating","gearLaneFeedingRating","gearPlacingSpeedRating","defenseRating","defenseEscapeRating"];
 
   ids.forEach( function(id) {
 
@@ -1194,7 +1195,9 @@ function checkAndAddBallFeedHistoryItem(mode,percentOrCount){
           "</h3>" +
           "<img class='moveHistoryItem' src='/util/img/upDownImage.png' style=''/>" +
           "</div>");
-
+        clearFeed();
+        generateJSON();
+        checkAutoCount();
       }
     }
     else if(percentOrCount == "count"){
@@ -1215,13 +1218,13 @@ function checkAndAddBallFeedHistoryItem(mode,percentOrCount){
           "</h3>" +
           "<img class='moveHistoryItem' src='/util/img/upDownImage.png' />" +
           "</div>");
-
+        clearFeed();
+        generateJSON();
+        checkAutoCount();
       }
     }
   }
-    clearFeed();
-    generateJSON();
-    checkAutoCount();
+
 }
 function checkAndAddGearFeedHistoryItem(mode){
   if(FEED_GEAR_METHOD != null && FEED_GEAR_RESULT!= null){
@@ -1239,7 +1242,7 @@ function checkAndAddGearFeedHistoryItem(mode){
 
     $("#historyList").prepend(
          "<div " +
-           "data-actionType='feedBall' " +
+           "data-actionType='feedGear' " +
            "data-mode="+mode+" " +
            "data-method="+FEED_GEAR_METHOD+" " +
            "data-result="+FEED_GEAR_RESULT+" " +
@@ -1448,15 +1451,14 @@ function generateJSON(){
     autoLineCrossed :        $("#reachedLineInAuto").is(":checked"),
     duration :               $("#climbTimer").text().substr(0,5),
     climbSuccess:            $("#climbSuccess").is(":checked"),
-    shootingAccuracyRating:  $("#shootingAccuracyRating").rateYo("rating"),
-    shootingSpeedRating:     $("#shootingSpeedRating").rateYo("rating"),
-    gearFeedAccuracyRating:  $("#gearFeedAccuracyRating").rateYo("rating"),
-    gearFeedSpeedRating:     $("#gearFeedSpeedRating").rateYo("rating"),
-    ballFeedAccuracyRating:  $("#ballFeedAccuracyRating").rateYo("rating"),
-    ballFeedSpeedRating:     $("#ballFeedSpeedRating").rateYo("rating"),
-    gearSpeedRating:         $("#gearSpeedRating").rateYo("rating"),
-    driverSkillRating:       $("#driverSkillRating").rateYo("rating"),
+    ballGroundFeedingRating: $("#ballGroundFeedingRating").rateYo("rating"),
+    ballLaneFeedingRating:   $("#ballLaneFeedingRating").rateYo("rating"),
+    ballShootingSpeedRating: $("#ballShootingSpeedRating").rateYo("rating"),
+    gearGroundFeedingRating: $("#gearGroundFeedingRating").rateYo("rating"),
+    gearLaneFeedingRating:   $("#gearLaneFeedingRating").rateYo("rating"),
+    gearPlacingSpeedRating:  $("#gearPlacingSpeedRating").rateYo("rating"),
     defenseRating:           $("#defenseRating").rateYo("rating"),
+    defenseEscapeRating:     $("#defenseEscapeRating").rateYo("rating")
   };
 
   var matchData = {
@@ -1476,7 +1478,7 @@ function generateJSON(){
   }
 
 
-  $.cookie("matchData",JSON.stringify(matchData));
+  localStorage.setItem("matchData",JSON.stringify(matchData));
 
   function getRecord(e,mode){
     var record = {};

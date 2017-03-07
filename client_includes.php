@@ -19,13 +19,13 @@
 <link rel="stylesheet" type="text/css" href="/util/css/jquery.rateyo.css">
 <link rel="stylesheet" type="text/css" href="/util/css/dropzone.css">
 <link rel="stylesheet" type="text/css" href="/util/css/jquery-ui.css">
-<script type="application/javascript" src="/util/js/modernizr.flexbox.js"></script>
+<script type="application/javascript" src="/util/js/js.cookie-2.1.3.min.js"></script>
 <script type="application/javascript" src="/util/js/jquery-2.2.0.min.js"></script>
+<script type="application/javascript" src="/util/js/modernizr.flexbox.js"></script>
 <script type="application/javascript" src="/util/js/jquery.flexverticalcenter.js"></script>
 <script type="application/javascript" src="/util/js/remodal.js"></script>
 <script type="application/javascript" src="/util/js/buttons.js"></script>
 <script type="application/javascript" src="/util/js/toastr.js"></script>
-<script type="application/javascript" src="/util/js/jquery.cookie.js"></script>
 <script type="application/javascript" src="/util/js/jquery.color.js"></script>
 <script type="text/javascript" src="/util/js/svg.js"></script>
 <script type="text/javascript" src="/util/js/d3.js" charset="utf-8"></script>

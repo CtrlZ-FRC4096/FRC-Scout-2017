@@ -128,15 +128,15 @@ $CURR_MATCH = null;
 
 <script>
   $(document).ready(function(){
-
+    Cookies.set("matchData",{ expires: 3650, path: '/' })
     var SELECTED_TEAM = 0;
 
-    if (typeof $.cookie('deviceID') === 'undefined'){
+    if (typeof Cookies.get('deviceID') === 'undefined'){
       <?php
       $randomID = $helper->getRandomDeviceID();
       ?>
 
-      $.cookie("deviceID","<?=$randomID?>",{ expires: 3650, path: '/' });
+      Cookies.set("deviceID","<?=$randomID?>",{ expires: 3650, path: '/' });
       $.ajax({
         type: "POST",
         url: "/util/php/serve/addDevice.php",

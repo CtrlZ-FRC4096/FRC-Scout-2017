@@ -8,18 +8,14 @@
 ini_set("display_errors", "1");
 error_reporting(E_ALL);
 
-
-
 include($_SERVER['DOCUMENT_ROOT']."/util/php/include_classes.php");
 
-
-$JSONdata = $_COOKIE['matchData'];
+$JSONdata = $_POST['data'];
 $data = json_decode($JSONdata);
 $teamMatchID = $data->teamMatch->id;
 $helper = new Helper();
 $helper->con = $helper->connectToDB();
 $helper->con->beginTransaction();
-
 
 foreach($data->actions as $record){
 
