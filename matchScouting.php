@@ -8,12 +8,9 @@
 $SCOUTING_TEAM_MATCH = $match->getClaimedTeamMatchForDevice($_COOKIE['deviceID']);
 $SCOUTING_TEAM = $SCOUTING_TEAM_MATCH['teamNumber'];
 $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
-//if (isset($_COOKIE['matchData'])) {
-//  $RESUMING_MATCH = true;
-//} else {
-//  $RESUMING_MATCH = false;
+
   $helper->setCollectionStarted($match->id, $SCOUTING_TEAM);
-//}
+$BOILERS_POS = "boilers" . ucwords($helper->BOILERS_POS);
 ?>
 <!DOCTYPE HTML>
 <html style="overflow-x: hidden">
@@ -184,7 +181,7 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
     <div id="gearPage" style="display:flex;flex: 0 1 70%;flex-direction:column;">
       <div style="margin: 15px;flex: 1; display: flex;">
         <div style="display: flex;flex-direction: row;width: 60%;">
-          <object style="display:flex;flex: 1;" type="image/svg+xml" data="/util/svg/gear.svg" id="gearSVG"></object>
+          <object style="display:flex;flex: 1;" type="image/svg+xml" data="/util/svg/gears/gear<?=ucwords($SCOUTING_TEAM_COLOR)?><?=$SCOUTING_TEAM_COLOR == $helper->LEFT_TEAM ? "Left":"Right"?>.svg" id="gearSVG"></object>
         </div>
 
         <div style="position:relative;display: flex;flex-direction: column;width: 40%;">
@@ -215,7 +212,7 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
 
       <div style="margin: 15px;flex: 1; display: flex;">
         <div style="display: flex;flex-direction: row;width: 60%;">
-          <object style="flex: 1;visibility:hidden" type="image/svg+xml" data="/util/svg/boilersClose/leftBlueFeedForRed.svg" id="feedSVG"></object>
+          <object style="flex: 1;visibility:hidden" type="image/svg+xml" data="/util/svg/<?=$BOILERS_POS?>/left<?=ucwords($helper->LEFT_TEAM)?>FeedFor<?=ucwords($SCOUTING_TEAM_COLOR)?>.svg" id="feedSVG"></object>
 
         </div>
 
@@ -239,7 +236,7 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
               display:flex;align-items:center;flex: 1
             }
             #feedBallPercentage, #feedBall, #feedBallCount{
-              cursor: pointer; display: flex; flex-direction: column; flex: 0 1 180px; width: 100%;
+              cursor: pointer; display: flex; flex-direction: column; flex: 0 1 200px; width: 100%;
             }
             #feedBallPercentageOptions,#feedGearOutcomeOptions,#feedGearMethodOptions, #feedBallCountOptions{
               cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;min-height:46px
@@ -252,6 +249,9 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
              }
             #feedBallPercentageAfter input, #feedBallPercentageBefore input, #feedBallAmount input{
               font-weight:bold;text-align: center;width:80%;margin: 0 auto;height: 70%;flex: 0 1 60px;outline:none;border:none;
+            }
+            #feedBallPercentageAfter span, #feedBallPercentageBefore span, #feedBallAmount span{
+              margin-top: 5px;
             }
           </style>
 
@@ -271,10 +271,12 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
                 <h2 style=" margin: 0;text-align:center ">Percentage of Robot's Ball Pit:</h2>
                 <div id="feedBallPercentageOptions" style="">
                   <div id="feedBallPercentageBefore" style="/">
-                    <input autofocus maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="Before %">
+                    <span>Before %</span>
+                    <input autofocus maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5">
                   </div>
                   <div id="feedBallPercentageAfter" style="/">
-                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="After %">
+                    <span>After %</span>
+                    <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5">
                   </div>
                 </div>
                 <a id="submitFeedBallPercentage"
@@ -325,7 +327,7 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
         <div style="display: flex;flex-direction: row;width: 60%;">
           <object style="cursor:crosshair;display:flex;flex: 1;" type="image/svg+xml"
                   field-direction="<?= ($helper->LEFT_TEAM == $SCOUTING_TEAM_COLOR ? "right" : "left") ?>" id="shootSVG"
-                  data="/util/svg/boilersClose/<?= ($SCOUTING_TEAM_COLOR == "red" ? "blue" : "red") . ($helper->LEFT_TEAM == $SCOUTING_TEAM_COLOR ? "Right" : "Left") ?>Shoot.svg"></object>
+                  data="/util/svg/<?=$BOILERS_POS?>/<?= ($SCOUTING_TEAM_COLOR) . ($helper->LEFT_TEAM == $SCOUTING_TEAM_COLOR ? "Left" : "Right") ?>Shoot.svg"></object>
         </div>
 
         <div style="position:relative;display: flex;flex-direction: column;width: 40%;">
@@ -351,17 +353,21 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
               cursor: pointer; display: flex; flex-direction: column; flex: 0 1 213px; width: 100%;
             }
             #shootPercentageOptions,#shootCountOptions{
-              cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;min-height:46px
+              cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;;min-height:46px;border:2px solid black;
             }
-            #shootPercentageBefore,#shootPercentageAfter,#shootPercentageAccuracy,#shootCountMisses,#shootCountScores{
+            .shootInputContainer{
               display:flex;align-items:center;flex: 1;flex-direction:column;justify-content: center;
             }
-            #shootPercentageAfter,#shootPercentageBefore,#shootCountScores,#shootHighOption{
+            #shootPercentageAfter,#shootPercentageBefore,#shootCountScores,#shootHighOption,#shootCountMisses{
               border-right: 2px solid black;
             }
-            #shootPercentageAfter input, #shootPercentageBefore input, #shootPercentageAccuracy input, #shootCountScores input, #shootCountMisses input,#shootPercentageAccuracy input{
-              font-weight:bold;text-align: center;width:80%;margin: 0 auto;height: 70%;flex: 0 1 60px;outline:none;border:none;
+            .shootInputContainer input{
+              font-weight:bold;text-align: center;width:90%;margin: 0 auto;height: 100%;flex: 0 1 60px;outline:none;border:none;
             }
+            .shootInputContainer span{
+              margin-top: 5px;text-align:center;
+            }
+
           </style>
 
           <div id="shootBody" style="">
@@ -376,14 +382,17 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
             <div id="shootPercentages"  style="">
               <h2 style=" margin: 0;text-align:center ">Percentage of Robot's Ball Pit:</h2>
               <div id="shootPercentageOptions" style="">
-                <div id="shootPercentageBefore" style="/">
-                  <input autofocus maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5"  placeholder="Before %">
+                <div id="shootPercentageBefore" class="shootInputContainer" style="/">
+                  <span>% Before</span>
+                  <input autofocus maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" >
                 </div>
-                <div id="shootPercentageAfter" style="/">
-                  <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="After %">
+                <div id="shootPercentageAfter" class="shootInputContainer" style="/">
+                  <span>% After</span>
+                  <input maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" >
                 </div>
-                <div id="shootPercentageAccuracy" style="/">
-                  <input maxlength="3"  onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" placeholder="Acc. %">
+                <div id="shootPercentageAccuracy" class="shootInputContainer" style="/">
+                  <span>Acc. %</span>
+                  <input maxlength="3"  onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" max="100" step="5" >
                 </div>
               </div>
               <a id="submitShootPercentages"
@@ -394,11 +403,17 @@ $SCOUTING_TEAM_COLOR = $SCOUTING_TEAM_MATCH['side'];
             <div id="shootCounts" style="display:none">
               <h2 style=" margin: 0; text-align:center">Count the balls shot:</h2>
               <div id="shootCountOptions" style="">
-                <div id="shootCountScores" style="/">
-                  <input autofocus type="text" style="" onkeypress="return restrictCharacters(this, event, /[0-9]/g);"  placeholder="3 Scores">
+                <div id="shootCountScores" class="shootInputContainer"  style="/">
+                  <span>Scored</span>
+                  <input autofocus onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" inputmode="numeric" min="0" step="1">
                 </div>
-                <div id="shootCountMisses" style="/">
-                  <input type="text" style="" onkeypress="return restrictCharacters(this, event, /[0-9]/g);"  placeholder="4 Misses">
+                <div id="shootCountMisses" class="shootInputContainer" style="/">
+                  <span>Missed</span>
+                  <input  onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" inputmode="numeric" min="0" step="1">
+                </div>
+                <div id="shootCountLeftoverPercentage" class="shootInputContainer" style="/">
+                  <span>% Ball Pit Left</span>
+                  <input  onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" inputmode="numeric" min="0" max="100" step="5" value="0">
                 </div>
               </div>
               <a id="submitShootCount"
@@ -590,6 +605,7 @@ var SHOOT_AMT_PERCENT_END = null;
 var SHOOT_ACCURACY_PERCENT = null;
 var SHOOT_AMT_COUNT_SCORED = null;
 var SHOOT_AMT_COUNT_MISSED = null;
+var SHOOT_AMT_COUNT_LEFTOVER = 0;
 //var SHOOT_INPUT_METHOD = null;
 
 var GEAR_LOCATION = null;
@@ -651,6 +667,7 @@ $(document).ready(function () {
                 SHOOT_ACCURACY_PERCENT = parseInt(action.accuracy);
                 SHOOT_AMT_COUNT_SCORED = parseInt(action.scored);
                 SHOOT_AMT_COUNT_MISSED = parseInt(action.missed);
+                SHOOT_AMT_COUNT_MISSED = parseInt(action.leftover);
                 checkAndAddShootHistoryItem(action.mode, action.inputMethod);
                 break;
               case "gear" :
@@ -769,6 +786,7 @@ $(document).ready(function () {
   $("#shootPage #submitShootCount").click(function () {
     var scored = $("#shootCountScores input").val();
     var missed = $("#shootCountMisses input").val();
+    var leftover = $("#shootCountLeftoverPercentage input").val();
     var errors = false;
     if(scored != ""){
       SHOOT_AMT_COUNT_SCORED = scored;
@@ -782,6 +800,13 @@ $(document).ready(function () {
     }
     else{
       toastr["error"]("Please fill out and try again", "A missed count is required!");
+      errors = true;
+    }
+    if(leftover != ""){
+      SHOOT_AMT_COUNT_LEFTOVER = leftover;
+    }
+    else{
+      toastr["error"]("Please fill out and try again", "A leftover percentage is required!");
       errors = true;
     }
     if(errors){return;}
@@ -1437,10 +1462,11 @@ function checkAndAddShootHistoryItem(mode,percentOrCount){
       " data-level='"+SHOOT_LEVEL+"'" +
       " data-scored='"+SHOOT_AMT_COUNT_SCORED+"' " +
       " data-missed='"+SHOOT_AMT_COUNT_MISSED+"' " +
+      " data-leftover='"+SHOOT_AMT_COUNT_LEFTOVER+"' " +
       " data-inputMethod='count' " +
       "data-actionType=\"shoot\" data-mode="+mode+" class=\"historyItem\" style='background: "+bg+"; display: flex'> " +
       "<img class='deleteHistoryItem' src='/util/img/redX.gif' />" +
-      "<h3 style='flex: 1 1 80%;text-align: center;line-height: 21px'><b>Shot "+level+" Goal</b><br/>"+SHOOT_AMT_COUNT_SCORED +" scored, "+SHOOT_AMT_COUNT_SCORED+" missed</h3>" +
+      "<h3 style='flex: 1 1 80%;text-align: center;line-height: 21px'><b>Shot "+level+" Goal</b><br/>"+SHOOT_AMT_COUNT_SCORED +" scored, "+SHOOT_AMT_COUNT_MISSED+" missed, "+SHOOT_AMT_COUNT_LEFTOVER+"% left</h3>" +
       "<img class='moveHistoryItem' src='/util/img/upDownImage.png' />" +
       "</div>");
     }
@@ -1459,6 +1485,7 @@ function clearShoot(){
     "#shootPage #shootPercentageAfter input, " +
     "#shootPage #shootPercentageAccuracy input")
     .val("");
+  $("#shootPage #shootCountLeftoverPercentage input").val("0");
   $("#shootPage #shootHighOption, #shootPage #shootLowOption").animate({ backgroundColor: "transparent"}, 'slow').removeAttr("selected");
   SHOOT_POS_X = null;
   SHOOT_POS_Y = null;
@@ -1468,6 +1495,7 @@ function clearShoot(){
   SHOOT_ACCURACY_PERCENT = null;
   SHOOT_AMT_COUNT_SCORED = null;
   SHOOT_AMT_COUNT_MISSED = null;
+  SHOOT_AMT_COUNT_LEFTOVER = 0;
   SHOOT_INPUT_METHOD = null;
 
 }
@@ -1555,6 +1583,7 @@ function generateJSON(){
         record.accuracy = (record.inputMethod == "percent" ? $(e).attr("data-accuracy") : null)
         record.scored = (record.inputMethod == "count" ? $(e).attr("data-scored") : null);
         record.missed = (record.inputMethod == "count" ? $(e).attr("data-missed") : null);
+        record.leftover = (record.inputMethod == "count" ? $(e).attr("data-leftover") : null);
         record.orderID = orderID;
         record.eventType = "shoot";
         break;

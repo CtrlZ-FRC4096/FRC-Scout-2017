@@ -10,8 +10,9 @@ class Helper {
 
   public $con;
 
-  public $LEFT_TEAM = "red";
-  public $RIGHT_TEAM = "blue";
+  public $LEFT_TEAM = "blue";
+  public $RIGHT_TEAM = "red";
+  public $BOILERS_POS = "far";
   public $autoCycleDBConnection = true;
 
   const HALF_FIELD_LENGTH_INCHES = 492.7;

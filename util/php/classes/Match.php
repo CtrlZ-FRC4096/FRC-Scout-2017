@@ -116,6 +116,7 @@ class Match {
                   FROM match$tableName
                   WHERE teamMatchID = :teamMatchID;
                   ";
+//      echo $query . PHP_EOL;
 
 
       $stmt = $this->helper->con->prepare($query);
@@ -127,6 +128,7 @@ class Match {
       try {
         $stmt->execute();
       } catch (PDOException $e) {
+        echo $e->getMessage();
         $this->helper->con->rollBack();
         return false;
       }
@@ -136,13 +138,13 @@ class Match {
 
 
     $query = "UPDATE teamMatches
-              SET deviceID = '',
+              SET deviceID = null,
                   collectionEnded = 0,
                   collectionStarted = 0,
                   scouterID = null
-              WHERE matchID = :matchID
+              WHERE id = :teamMatchID
               AND teamNumber = :teamNumber";
-    $params = array(":matchID" => $this->id, ":teamNumber" =>$teamNumber);
+    $params = array(":teamMatchID" => $teamMatchID, ":teamNumber" =>$teamNumber);
     $stmt = $this->helper->con->prepare($query);
     if ($params !== null) {
       foreach ($params as $key => $param) {
@@ -152,6 +154,8 @@ class Match {
     try {
       $stmt->execute();
     } catch (PDOException $e) {
+      echo $e->getMessage();
+
       $this->helper->con->rollBack();
       return false;
     }

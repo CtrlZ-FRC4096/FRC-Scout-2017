@@ -1,0 +1,49 @@
+todo
+
+PENDING
+--------------
+Maps
+	Crosshair
+
+Import / Export
+Pit Scouting Sheet
+Rating Scales
+Ball Capacity Calcs
+Keyboard shortcuts
+	Switch Give Counts/Percentages
+	On Counts page: Alt + S, Alt + M for score, miss
+If no ground feeder, do not show % ball pit left.
+	postprocess changes
+Enter for submit?
+
+
+IN PROGRESS
+-----------------
+Postprocessing
+Analysis
+
+
+PENDING RECONFIRMATION
+-----------------------
+confirm clearScreens work as expected.
+confirm data integrity
+Keyboard Shortcuts
+	Esc Key + Others
+
+LATER
+-----------------
+Input spinners if needed
+labels over inputs
+
+DONE
+---------------------
+Notes
+input validation 
+	No negative numbers
+confirm data encode and decode + ui propogation
+
+Feed Add and Shoot Add must check current view
+
+Percent input validation, not over 100% on submit
+
+Add Ending % for Shoot Count. Default 0.

@@ -9,7 +9,7 @@ ini_set("display_errors", "1");
 error_reporting(E_ALL);
 
 include($_SERVER['DOCUMENT_ROOT']."/util/php/include_classes.php");
-
+include($_SERVER['DOCUMENT_ROOT']."/util/php/serve/postprocess.php");
 $JSONdata = $_POST['data'];
 $data = json_decode($JSONdata);
 $teamMatchID = $data->teamMatch->id;
@@ -23,50 +23,70 @@ foreach($data->actions as $record){
   $params = array();
 
   switch($record->eventType){
-    case "feed":
+    case "gear":
 
       try {
-        $query = "INSERT INTO matchFeeds(teamMatchID,orderID,`mode`,zoneID)
-                                    VALUES(:teamMatchID,:orderID,:mode,(SELECT id FROM zones WHERE name = :zone))";
+        $query = "INSERT INTO matchgears( teamMatchID,  orderID, `mode`,  location,  result)
+                                 VALUES (:teamMatchID, :orderID, :mode , :location, :result)";
         $stmt = $helper->con->prepare($query);
         $stmt->bindValue(":teamMatchID", $teamMatchID);
         $stmt->bindValue(":orderID", $record->orderID);
         $stmt->bindValue(":mode", $record->mode);
-        $stmt->bindValue(":zone", trim($record->zone));
+        $stmt->bindValue(":location", trim($record->location));
+        $stmt->bindValue(":result", intval($record->scoreMiss));
 
         $stmt->execute();
       }
       catch (PDOException $e) {
+        echo "gear";
+        echo "fail";
         echo $e->getMessage();
-        echo "matchFeeds";
+        $helper->con->rollBack();
+        return;
+      }
+
+      break;
+    case "feedBall":
+
+      try {
+        $query = "INSERT INTO matchballfeeds_preprocess(teamMatchID, orderID, `mode`, `before`, `after`, location, `count`,inputMethod)
+                              VALUES (:teamMatchID, :orderID, :mode, :before, :after, :location, :count, :inputMethod)";
+        $stmt = $helper->con->prepare($query);
+        $stmt->bindValue(":teamMatchID", $teamMatchID);
+        $stmt->bindValue(":orderID", $record->orderID);
+        $stmt->bindValue(":mode", $record->mode);
+        $stmt->bindValue(":before", (is_null($record->before) ? null : intval($record->before)));
+        $stmt->bindValue(":after", (is_null($record->after) ? null : intval($record->after)));
+        $stmt->bindValue(":location", trim($record->location));
+        $stmt->bindValue(":count", (is_null($record->count) ? null : intval($record->count)));
+        $stmt->bindValue(":inputMethod", $record->inputMethod);
+        $stmt->execute();
+      }
+      catch (PDOException $e) {
+        echo $e->getMessage();
+        echo "feedBall";
         $helper->con->rollBack();
         echo "fail";
         return;
       }
 
       break;
-    case "breach":
+    case "feedGear":
 
       try {
-        $query = "INSERT INTO matchBreaches(teamMatchID,orderID,`mode`,startZone,defenseID,endZone,fail)
-                                    VALUES(:teamMatchID,:orderID,:mode,
-                                    (SELECT id FROM zones WHERE name = :startZone)
-                                    ,:defenseID,
-                                    (SELECT id FROM zones WHERE name = :endZone),:fail)";
+        $query = "INSERT INTO matchgearfeeds(teamMatchID, orderID, `mode`, result, method)
+                                    VALUES(:teamMatchID,:orderID,:mode,:result,:method)";
         $stmt = $helper->con->prepare($query);
         $stmt->bindValue(":teamMatchID", $teamMatchID);
         $stmt->bindValue(":orderID", $record->orderID);
         $stmt->bindValue(":mode", $record->mode);
-        $stmt->bindValue(":startZone", trim($record->startZone));
-        $stmt->bindValue(":defenseID", trim($record->defenseID));
-        $stmt->bindValue(":endZone", trim($record->endZone));
-        $stmt->bindValue(":fail", ($record->fail == "true" ? 1 : 0));
-
+        $stmt->bindValue(":result", trim($record->result));
+        $stmt->bindValue(":method", trim($record->method));
         $stmt->execute();
       }
       catch (PDOException $e) {
         echo $e->getMessage();
-        echo "matchBreaches";
+        echo "feedGear";
         $helper->con->rollBack();
         echo "fail";
         return;
@@ -76,17 +96,22 @@ foreach($data->actions as $record){
     case "shoot":
 
       try {
-        $query = "INSERT INTO matchShoots(teamMatchID,orderID,`mode`,coordX,coordY,highLow,scoreMiss)
-                                    VALUES(:teamMatchID,:orderID,:mode,:coordX,:coordY,:highLow,:scoreMiss)";
+        $query = "INSERT INTO matchshoots_preprocess( teamMatchID,  orderID, `mode`,  coordX,  coordY,  scored,  missed,  leftover, `before`, `after`,  accuracy,  highLow,  inputMethod)
+                                              VALUES(:teamMatchID, :orderID, :mode , :coordX, :coordY, :scored, :missed, :leftover, :before , :after , :accuracy, :highLow, :inputMethod)";
         $stmt = $helper->con->prepare($query);
         $stmt->bindValue(":teamMatchID", $teamMatchID);
         $stmt->bindValue(":orderID", $record->orderID);
         $stmt->bindValue(":mode", $record->mode);
         $stmt->bindValue(":coordX", trim($record->coordX));
         $stmt->bindValue(":coordY", trim($record->coordY));
-        $stmt->bindValue(":highLow", intval($record->highLow));
-        $stmt->bindValue(":scoreMiss", intval($record->scoreMiss));
-
+        $stmt->bindValue(":scored",   (is_null($record->scored) ? null : intval($record->scored)));
+        $stmt->bindValue(":missed",   (is_null($record->missed) ? null : intval($record->missed)));
+        $stmt->bindValue(":leftover",   (is_null($record->missed) ? null : intval($record->leftover)));
+        $stmt->bindValue(":before",   (is_null($record->before) ? null : intval($record->before)));
+        $stmt->bindValue(":after",    (is_null($record->after) ? null : intval($record->after)));
+        $stmt->bindValue(":accuracy", (is_null($record->accuracy) ? null : intval($record->accuracy)));
+        $stmt->bindValue(":highLow", intval($record->level));
+        $stmt->bindValue(":inputMethod", $record->inputMethod);
         $stmt->execute();
       }
       catch (PDOException $e) {
@@ -103,20 +128,35 @@ foreach($data->actions as $record){
 
 try {
 
-  $query = "INSERT INTO matchClimbs(teamMatchID, `mode`,batterReached,duration,defensiveRating,offensiveRating,success)
-                                    VALUES(:teamMatchID,:mode,:batterReached,:duration,:defensiveRating,:offensiveRating,:success)";
+  $query = "INSERT INTO matchautos(teamMatchID, crossedLine)
+                                    VALUES(:teamMatchID,:crossedLine)";
   $stmt = $helper->con->prepare($query);
   $stmt->bindValue(":teamMatchID", $teamMatchID);
-  $stmt->bindValue(":mode", 'tele');
-  $stmt->bindValue(":batterReached", ($data->endGame->batterReached == "true" ? 1 : 0));
-  $stmt->bindValue(":defensiveRating", $data->endGame->defensiveRating );
-  $stmt->bindValue(":offensiveRating", $data->endGame->offensiveRating );
-  $stmt->bindValue(":success", ($data->endGame->success == "true" ? 1 : 0) );
+  $stmt->bindValue(":crossedLine", ($data->otherFields->autoLineCrossed ? 1 : 0));
+  $stmt->execute();
+  if(trim($data->otherFields->duration) != "0:00" || $data->otherFields->climbSuccess){
+    $query = "INSERT INTO matchclimbs(teamMatchID, touchpad, duration)
+                                    VALUES(:teamMatchID,:touchpad,:duration)";
+    $stmt = $helper->con->prepare($query);
+    $time = explode(":",$data->otherFields->duration);
+    $stmt->bindValue(":duration", intval($time[0]) * 60 + intval($time[1]));
+    $stmt->bindValue(":teamMatchID", $teamMatchID);
+    $stmt->bindValue(":touchpad", ($data->otherFields->climbSuccess ? 1 : 0));
+    $stmt->execute();
 
-  $time = explode(":",$data->endGame->duration);
-
-  $stmt->bindValue(":duration", intval($time[0]) * 60 + intval($time[1]));
-
+  }
+  $query = "INSERT INTO matchratings( teamMatchID,  ballGroundFeeding,  ballLoadingLaneFeeding,  ballShootingSpeed,  gearGroundFeeding,  gearLoadingLaneFeeding,  gearPlacingSpeed,  abilityToDefend,  abilityToEscapeDefense)
+                              VALUES(:teamMatchID, :ballGroundFeeding, :ballLoadingLaneFeeding, :ballShootingSpeed, :gearGroundFeeding, :gearLoadingLaneFeeding, :gearPlacingSpeed, :abilityToDefend, :abilityToEscapeDefense)";
+  $stmt = $helper->con->prepare($query);
+  $stmt->bindValue(":teamMatchID", $teamMatchID);
+  $stmt->bindValue(":ballGroundFeeding", $data->otherFields->ballGroundFeedingRating);
+  $stmt->bindValue(":ballLoadingLaneFeeding", $data->otherFields->ballLaneFeedingRating);
+  $stmt->bindValue(":ballShootingSpeed", $data->otherFields->ballShootingSpeedRating);
+  $stmt->bindValue(":gearGroundFeeding", $data->otherFields->gearGroundFeedingRating);
+  $stmt->bindValue(":gearLoadingLaneFeeding", $data->otherFields->gearLaneFeedingRating);
+  $stmt->bindValue(":gearPlacingSpeed", $data->otherFields->gearPlacingSpeedRating);
+  $stmt->bindValue(":abilityToDefend", $data->otherFields->defenseRating);
+  $stmt->bindValue(":abilityToEscapeDefense", $data->otherFields->defenseEscapeRating);
   $stmt->execute();
 
   $query = "UPDATE teammatches SET collectionEnded = 1 WHERE id = :teamMatchID";
@@ -127,7 +167,7 @@ try {
 }
 catch (PDOException $e) {
   echo $e->getMessage();
-  echo "teamReservations";
+  echo "otherFields";
   $helper->con->rollBack();
   echo "fail";
   return;
@@ -150,11 +190,15 @@ catch(PDOException $e){
   return;
 }
 
-
-
 $helper->con->commit();
+
+$pitQuery = "SELECT * FROM teampit WHERE teamNumber = :teamNumber";
+$result = $helper->queryDB($pitQuery,array(":teamNumber"=>$data->teamMatch->teamNumber), false);
+if($result['groundFeedsBalls'] != null && $result['ballCapacity'] != null){
+  postProcessTeamMatch($teamMatchID,intval($result['ballCapacity']), ($result['groundFeedsBalls'] == 1 ? true : false));
+}
+
+
 echo "Success";
-
-
 
 ?>

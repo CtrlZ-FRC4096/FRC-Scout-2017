@@ -38,7 +38,7 @@ $CURR_MATCH = null;
 </div>
 <body style="background-image: '/util/img/scouting-home-bg.jpg';">
 <div style="width: 100%;overflow: hidden">
-  <h1 style="text-align: center;">Ctrl-Z 4096 Scouting 2016</h1>
+  <h1 style="text-align: center;">Ctrl-Z 4096 Scouting 2017</h1>
   <h2 style="text-align: center;"><?=$currCompetition->name?></h2>
 </div>
 <hr>
@@ -94,7 +94,7 @@ $CURR_MATCH = null;
       <select id="scouters">
         <?php
           foreach($helper->getScouters() as $scouter){
-            echo "<option value='$scouter'>" . $scouter . "</option>";
+            echo "<option value='{$scouter['id']}'>" . $scouter['name'] . "</option>";
           }
         ?>
       </select>
@@ -128,7 +128,7 @@ $CURR_MATCH = null;
 
 <script>
   $(document).ready(function(){
-    Cookies.set("matchData",{ expires: 3650, path: '/' })
+    localStorage.removeItem("matchData")
     var SELECTED_TEAM = 0;
 
     if (typeof Cookies.get('deviceID') === 'undefined'){
@@ -189,7 +189,7 @@ $CURR_MATCH = null;
 
       $.ajax({
         type: "POST",
-        data: {matchNumber:$("#matchSwitcher").val(), compID: <?=$currCompetition->id?>, teamNumber:$("#teamSelection").val(),scouterName:$("#scouters").val()},
+        data: {matchNumber:$("#matchSwitcher").val(), compID: <?=$currCompetition->id?>, teamNumber:$("#teamSelection").val(),scouterID:$("#scouters").val()},
         url: "/util/php/serve/claimTeam.php",
         success: function (data) {
           if(data=="success"){
