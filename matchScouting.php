@@ -713,9 +713,6 @@ $(document).ready(function () {
 
 
   }
-  $(document).keyup(function(e){
-    handleKeypress(e.originalEvent);
-  });
 
   $("#cancelFeed").click(function(){
     clearFeed();
@@ -877,6 +874,7 @@ $(document).ready(function () {
       $("#feedSVG").css("visibility","hidden");
       FEED_TYPE = "gear";
     }
+    focusOnAvailableInput();
   });
   $("#feedPage #feedGearSuccess, #feedPage #feedGearFailure").click(function () {
     $(this).css("background-color", "rgb(42, 127, 255)").attr("selected");
@@ -1643,6 +1641,7 @@ function clearFeed(){
   FEED_GEAR_RESULT = null;
   FEED_GEAR_METHOD = null;
 }
+document.onkeyup = handleKeypress;
 function handleKeypress(e){
     if(e.target.tagName == "INPUT" || e.target.tagName == "TEXTAREA"){
       return;
@@ -1701,6 +1700,15 @@ function handleFeedPageKeyPress(e){
     }
     else if(char == "R"){
       $("#feedPage #feedGearGround").trigger("click");
+    }
+  }
+  else if($("#feedPage #feedBall").is(":visible")){
+    if(char == "P" && e.altKey){
+     $("#feedPage #feedBallSwitchToPercentage").trigger("click")
+    }
+    else if(char == "C" && e.altKey){
+      $("#feedPage #feedBallSwitchToCount").trigger("click")
+
     }
   }
 }

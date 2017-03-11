@@ -1,39 +1,44 @@
 todo
 
+
+FOR COMPETITION
+---------------------
+Print Pit Scouting Forms
+Ball Capacity Calc : ([Tank Volume] / 19.63 in^3) * 0.64
+
 PENDING
 --------------
-Maps
-	Crosshair
-
 Import / Export
-Pit Scouting Sheet
+
 Rating Scales
-Ball Capacity Calcs
-Keyboard shortcuts
-	Switch Give Counts/Percentages
-	On Counts page: Alt + S, Alt + M for score, miss
+
 If no ground feeder, do not show % ball pit left.
 	postprocess changes
 Enter for submit?
+Feed and Shoot warnings if before is greater than after + v.v.
+
+Pick List Templates.
 
 
 IN PROGRESS
 -----------------
-Postprocessing
 Analysis
 
-
-PENDING RECONFIRMATION
------------------------
+NEED TO TEST
+----------------------
 confirm clearScreens work as expected.
 confirm data integrity
 Keyboard Shortcuts
 	Esc Key + Others
+Postprocessing
 
 LATER
 -----------------
 Input spinners if needed
 labels over inputs
+Keyboard shortcuts
+	Switch Give Counts/Percentages
+	On Counts page: Alt + S, Alt + M for score, miss
 
 DONE
 ---------------------
@@ -47,3 +52,9 @@ Feed Add and Shoot Add must check current view
 Percent input validation, not over 100% on submit
 
 Add Ending % for Shoot Count. Default 0.
+Maps
+	Crosshair
+
+Pit Scouting Sheet
+
+Ball Capacity Calcs
