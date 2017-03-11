@@ -188,27 +188,25 @@ foreach($teams as $team){
 
     //RATINGS
 
-    $ballShootAccuracyRating = rand(0.7*arr_avg([$highShootsAccuracy,$lowShootsAccuracy]),1.3*arr_avg([$highShootsAccuracy,$lowShootsAccuracy]));
-    $ballShootAccuracyRating = round($ballShootAccuracyRating /2);
-    $ballShootAccuracyRating = $ballShootAccuracyRating  > 5 ? 5 : $ballShootAccuracyRating ;
+//    $ballShootAccuracyRating = rand(0.7*arr_avg([$highShootsAccuracy,$lowShootsAccuracy]),1.3*arr_avg([$highShootsAccuracy,$lowShootsAccuracy]));
+//    $ballShootAccuracyRating = round($ballShootAccuracyRating /2);
+//    $ballShootAccuracyRating = $ballShootAccuracyRating  > 5 ? 5 : $ballShootAccuracyRating ;
 
     $gearFeedingRating = rand(0.7*$gearFeedSuccess,1.3*$gearFeedSuccess);
     $gearFeedingRating = round($gearFeedingRating /2);
     $gearFeedingRating = $gearFeedingRating  > 5 ? 5 : $gearFeedingRating ;
 
-    $gearPlacingRating = rand(0.7*$gearSuccess,1.3*$gearSuccess);
-    $gearPlacingRating = round($gearPlacingRating /2);
-    $gearPlacingRating = $gearPlacingRating  > 5 ? 5 : $gearPlacingRating ;
+//    $gearPlacingRating = rand(0.7*$gearSuccess,1.3*$gearSuccess);
+//    $gearPlacingRating = round($gearPlacingRating /2);
+//    $gearPlacingRating = $gearPlacingRating  > 5 ? 5 : $gearPlacingRating ;
 
 
     $ratings = array(
       ":ballGroundFeeding" => $groundFeedsBalls ? rand(1,5) : 0 ,
       ":ballLoadingLaneFeeding" => $loadingLaneFeedsBalls ? rand(1,5) : 0,
-      ":ballShootingAccuracy" => $shoots ? $ballShootAccuracyRating : 0,
       ":ballShootingSpeed" => $shoots ? rand(1,5) : 0,
       ":gearGroundFeeding" => $groundFeedsGears ? $gearFeedingRating : 0,
       ":gearLoadingLaneFeeding" => $loadingLaneFeedsGears ? $gearFeedingRating : 0,
-      ":gearPlacingAccuracy" => $gears ? $gearPlacingRating : 0,
       ":gearPlacingSpeed" => $gears ? rand(1,5) : 0,
       ":abilityToDefend" => rand(0,5),
       ":abilityToEscapeDefense" => rand(0,5)
@@ -232,8 +230,8 @@ foreach($teams as $team){
       $counter +=1;
     }
 
-    $ratingsQuery = "INSERT INTO matchratings(teamMatchID, ballGroundFeeding, ballLoadingLaneFeeding, ballShootingAccuracy, ballShootingSpeed, gearGroundFeeding, gearLoadingLaneFeeding, gearPlacingAccuracy, gearPlacingSpeed, abilityToDefend, abilityToEscapeDefense) " .
-                    "VALUES (:teamMatchID, :ballGroundFeeding, :ballLoadingLaneFeeding, :ballShootingAccuracy, :ballShootingSpeed, :gearGroundFeeding, :gearLoadingLaneFeeding, :gearPlacingAccuracy, :gearPlacingSpeed, :abilityToDefend, :abilityToEscapeDefense)";
+    $ratingsQuery = "INSERT INTO matchratings(teamMatchID, ballGroundFeeding, ballLoadingLaneFeeding , ballShootingSpeed, gearGroundFeeding, gearLoadingLaneFeeding, gearPlacingSpeed, abilityToDefend, abilityToEscapeDefense) " .
+                    "VALUES (:teamMatchID, :ballGroundFeeding, :ballLoadingLaneFeeding, :ballShootingSpeed, :gearGroundFeeding, :gearLoadingLaneFeeding, :gearPlacingSpeed, :abilityToDefend, :abilityToEscapeDefense)";
 
     $ratings["teamMatchID"] = intval($teamMatch["id"]);
     $helper->queryDB($ratingsQuery,$ratings,true);
