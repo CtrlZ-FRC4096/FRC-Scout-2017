@@ -23,21 +23,6 @@ foreach(json_decode($_POST['matchNumbers']) as $matchNumber){
   $match['matchNumber'] = $result[0]['matchNumber'];
   $match['compID'] = $result[0]['compID'];
 
-  $match['matchDefenses'] = array();
-
-  $query = "SELECT * FROM matchdefenses WHERE matchID = :matchID";
-  $params = array(":matchID" => $match['id']);
-  $result =$helper->queryDB($query,$params,false);
-
-  foreach($result as $row){
-    $defense = array();
-    $defense['side'] = $row['side'];
-    $defense['slot'] = $row['slot'];
-    $defense['defenseID'] = $row['defenseID'];
-    array_push($match['matchDefenses'], $defense);
-  }
-
-
   $match['teamMatches'] = array();
 
   $query = "SELECT * FROM teamMatches WHERE matchID = :matchID";
@@ -46,6 +31,9 @@ foreach(json_decode($_POST['matchNumbers']) as $matchNumber){
   $teamMatches = $result;
 
   foreach($teamMatches as $teamMatchRow){
+    if($teamMatchRow['ready'] == 0){
+      continue;
+    }
     $teamMatch = array();
 
     $teamMatch['id'] = $teamMatchRow['id'];
@@ -56,85 +44,51 @@ foreach(json_decode($_POST['matchNumbers']) as $matchNumber){
     $teamMatch['deviceID'] = $teamMatchRow['deviceID'];
     $teamMatch['collectionStarted'] = $teamMatchRow['collectionStarted'];
     $teamMatch['collectionEnded'] = $teamMatchRow['collectionEnded'];
+    $teamMatch['scouterID'] = $teamMatchRow['scouterID'];
+    $teamMatch['postprocessed'] = $teamMatchRow['postprocessed'];
+    $teamMatch['ready'] = $teamMatchRow['collectionEnded'];
 
-    $teamMatch['feeds'] = array();
-
-    $query = "SELECT * FROM matchfeeds WHERE teamMatchID = :teamMatchID";
+    $teamMatch['ballfeeds'] = array();
+    $query = "SELECT * FROM matchballfeeds WHERE teamMatchID = :teamMatchID";
     $params = array(":teamMatchID" => $teamMatch['id']);
-    $result = $helper->queryDB($query,$params,false);
-    foreach($result as $feedRow){
-      $feed = array();
-      $feed['id'] = $feedRow['id'];
-      $feed['orderID'] = $feedRow['orderID'];
-      $feed['mode'] = $feedRow['mode'];
-      $feed['zoneID'] = $feedRow['zoneID'];
-      array_push($teamMatch['feeds'],$feed);
-    }
+    $teamMatch['ballfeeds'] = $helper->queryDB($query,$params,false);
+
+    $teamMatch['gearfeeds'] = array();
 
 
-    $teamMatch['breaches'] = array();
-
-
-    $query = "SELECT * FROM matchbreaches WHERE teamMatchID = :teamMatchID";
+    $query = "SELECT * FROM matchgearfeeds WHERE teamMatchID = :teamMatchID";
     $params = array(":teamMatchID" => $teamMatch['id']);
-    $result = $helper->queryDB($query,$params,false);
-
-    foreach($result as $breachRow){
-      $breach = array();
-
-       $breach['id'] = $breachRow['id'];
-       $breach['orderID'] = $breachRow['orderID'];
-       $breach['mode'] = $breachRow['mode'];
-       $breach['startZone'] = $breachRow['startZone'];
-       $breach['defenseID'] = $breachRow['defenseID'];
-       $breach['endZone'] = $breachRow['endZone'];
-       $breach['fail'] = $breachRow['fail'];
-      array_push($teamMatch['breaches'],$breach);
-
-    }
-
+    $teamMatch['gearfeeds'] = $helper->queryDB($query,$params,false);
 
     $teamMatch['shoots'] = array();
 
     $query = "SELECT * FROM matchshoots WHERE teamMatchID = :teamMatchID";
     $params = array(":teamMatchID" => $teamMatch['id']);
-    $result = $helper->queryDB($query,$params,false);
+    $teamMatch['shoots'] = $helper->queryDB($query,$params,false);
 
-    foreach($result as $shootRow){
-      $shoot = array();
+    $teamMatch['gears'] = array();
 
-      $shoot['id'] = $shootRow['id'];
-      $shoot['orderID'] = $shootRow['orderID'];
-      $shoot['mode'] = $shootRow['mode'];
-      $shoot['coordX'] = $shootRow['coordX'];
-      $shoot['coordY'] = $shootRow['coordY'];
-      $shoot['highLow'] = $shootRow['highLow'];
-      $shoot['scoreMiss'] = $shootRow['scoreMiss'];
-      array_push($teamMatch['shoots'],$shoot);
-
-    }
+    $query = "SELECT * FROM matchgears WHERE teamMatchID = :teamMatchID";
+    $params = array(":teamMatchID" => $teamMatch['id']);
+    $teamMatch['gears'] = $helper->queryDB($query,$params,false);
 
     $teamMatch['climbs'] = array();
 
     $query = "SELECT * FROM matchclimbs WHERE teamMatchID = :teamMatchID";
     $params = array(":teamMatchID" => $teamMatch['id']);
-    $result = $helper->queryDB($query,$params,false);
+    $teamMatch['climbs'] = $helper->queryDB($query,$params,false);
 
-    foreach($result as $climbRow){
-      $climb = array();
+    $teamMatch['autos'] = array();
 
-      $climb['id'] = $climbRow['id'];
-      $climb['mode'] = $climbRow['mode'];
-      $climb['batterReached'] = $climbRow['batterReached'];
-      $climb['duration'] = $climbRow['duration'];
-      $climb['offensiveRating'] = $climbRow['offensiveRating'];
-      $climb['defensiveRating'] = $climbRow['defensiveRating'];
-      $climb['success'] = $climbRow['success'];
-      array_push($teamMatch['climbs'],$climb);
+    $query = "SELECT * FROM matchautos WHERE teamMatchID = :teamMatchID";
+    $params = array(":teamMatchID" => $teamMatch['id']);
+    $teamMatch['autos'] = $helper->queryDB($query,$params,false);
 
-    }
+    $teamMatch['ratings'] = array();
 
-
+    $query = "SELECT * FROM matchratings WHERE teamMatchID = :teamMatchID";
+    $params = array(":teamMatchID" => $teamMatch['id']);
+    $teamMatch['ratings'] = $helper->queryDB($query,$params,false);
 
     array_push($match['teamMatches'],$teamMatch);
 

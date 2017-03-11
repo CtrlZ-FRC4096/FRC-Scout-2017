@@ -280,6 +280,21 @@ if($debug){
 
   }
 
+  try{
+    $query = "UPDATE teamMatches SET postprocessed = 1, ready = 1 WHERE id = :id";
+    $stmt = $helper->con->prepare($query);
+    $stmt->bindValue(":id",$teamMatchID);
+    $stmt->execute();
+  }
+  catch(PDOException $e){
+    echo $e->getMessage();
+    echo "discrepancies";
+    $helper->con->rollBack();
+    echo "fail";
+    return;
+  }
+
+
   $helper->con->commit();
 //  echo "Success";
 
