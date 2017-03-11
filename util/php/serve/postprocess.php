@@ -7,7 +7,7 @@
  */
 include($_SERVER['DOCUMENT_ROOT']."/util/php/include_classes.php");
 
-function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder){
+function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder, $debug=false){
   $helper = new Helper();
   $query = "SELECT * FROM matchballfeeds_preprocess WHERE teamMatchID = :teamMatchID";
   $feedRows = $helper->queryDB($query,array(":teamMatchID"=>$teamMatchID),false);
@@ -40,7 +40,7 @@ function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder){
         $before = $tank;
         $after = $tank + $row['count'];
         if($after > $ballCapacity){
-          array_push($discrepancies,array("eventType"=>"feedBall","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"after", "expected"=>$ballCapacity,"relationship"=>"less than", "received"=>$after));//insert discrepancy
+          array_push($discrepancies,array("discrepancyType"=>"Feed > Capacity","eventType"=>"feedBall","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"after", "expected"=>$ballCapacity,"relationship"=>"less than", "received"=>$after));//insert discrepancy
           $after = $ballCapacity; //set to $ballCapacity. User was inputting count, so it was likely an approximation error.
         }
         // now $tank is the same as $before
@@ -61,7 +61,7 @@ function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder){
           }
           else{
             // insert discrepancy.
-            array_push($discrepancies,array("eventType"=>"feedBall","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$tank,"relationship"=>"equal to", "received"=>$before));
+            array_push($discrepancies,array("discrepancyType"=>"Before != Expected","eventType"=>"feedBall","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$tank,"relationship"=>"equal to", "received"=>$before));
           }
           $tank = $before;
         }
@@ -69,7 +69,7 @@ function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder){
           // they had less than expected
           // Balls may have fallen out.
           // insert discrepancy.
-          array_push($discrepancies,array("eventType"=>"feedBall","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$tank,"relationship"=>"equal to", "received"=>$before));
+          array_push($discrepancies,array("discrepancyType"=>"Before != Expected","eventType"=>"feedBall","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$tank,"relationship"=>"equal to", "received"=>$before));
           $tank = $before;
         }
         $row['computedDelta'] = $after - $before;
@@ -100,7 +100,7 @@ function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder){
 
         if($before > $ballCapacity){
           //insert discrepancy
-          array_push($discrepancies,array("eventType"=>"shoot","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$ballCapacity,"relationship"=>"less than", "received"=>$before));//insert discrepancy
+          array_push($discrepancies,array("discrepancyType"=>"Before > Capacity","eventType"=>"shoot","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$ballCapacity,"relationship"=>"less than", "received"=>$before));//insert discrepancy
           $excess = $before - $ballCapacity;
           $before = $ballCapacity;
           $after -= $excess;
@@ -129,7 +129,7 @@ function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder){
         }
         else{
           // insert discrepancy.
-          array_push($discrepancies,array("eventType"=>"shoot","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$tank,"relationship"=>"equal to", "received"=>$before));
+          array_push($discrepancies,array("discrepancyType"=>"Before != Expected","eventType"=>"shoot","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$tank,"relationship"=>"equal to", "received"=>$before));
         }
         $tank = $before;
       }
@@ -137,7 +137,7 @@ function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder){
         // they had less than expected
         // Balls may have fallen out.
         // insert discrepancy.
-        array_push($discrepancies,array("eventType"=>"shoot","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$tank,"relationship"=>"equal to", "received"=>$before));
+        array_push($discrepancies,array("discrepancyType"=>"Before != Expected","eventType"=>"shoot","orderID" => $row['orderID'], "mode"=> $row['mode'], "time"=>"before", "expected"=>$tank,"relationship"=>"equal to", "received"=>$before));
         $tank = $before;
       }
 
@@ -162,99 +162,129 @@ function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder){
 //    var_dump($allRows);
     array_splice($allRows,$index,0,array($addRow));
   }
-  var_dump($allRows);
+
+
+if($debug){
+    var_dump($allRows);
   var_dump($discrepancies);
-//  $helper->con = $helper->connectToDB();
-//  $helper->con->beginTransaction();
-
-//  foreach($allRows as $record){
-//
-//    $query="";
-//    $params = array();
-//
-//    switch($record['eventType']){
-//      case "feedBall":
-//
-//        try {
-//          $query = "INSERT INTO matchballfeeds(teamMatchID, orderID, `mode`, location, delta)
-//                              VALUES (:teamMatchID, :orderID, :mode, :location, :delta)";
-//          $stmt = $helper->con->prepare($query);
-//          $stmt->bindValue(":teamMatchID", $teamMatchID);
-//          $stmt->bindValue(":orderID", $record['orderID']);
-//          $stmt->bindValue(":mode", $record['mode']);
-//          $stmt->bindValue(":location", trim($record['location']));
-//          $stmt->bindValue(":delta", $record['computedDelta']);
-//          $stmt->execute();
-//        }
-//        catch (PDOException $e) {
-//          echo $e->getMessage();
-//          echo "feedBall";
-//          $helper->con->rollBack();
-//          echo "fail";
-//          return;
-//        }
-//
-//        break;
-//
-//      case "groundFeed":
-//
-//        try {
-//          $query = "INSERT INTO matchballfeeds(teamMatchID, orderID, `mode`, location, delta)
-//                              VALUES (:teamMatchID, :orderID, :mode, :location, :delta)";
-//          $stmt = $helper->con->prepare($query);
-//          $stmt->bindValue(":teamMatchID", $teamMatchID);
-//          $stmt->bindValue(":orderID",null);
-//          $stmt->bindValue(":mode", $record['mode']);
-//          $stmt->bindValue(":location", "ground");
-//          $stmt->bindValue(":delta", $record['delta']);
-//          $stmt->execute();
-//        }
-//        catch (PDOException $e) {
-//          echo $e->getMessage();
-//          echo "groundFeed";
-//          $helper->con->rollBack();
-//          echo "fail";
-//          return;
-//        }
-//
-//        break;
-//      case "shoot":
-//
-//        try {
-//          $query = "INSERT INTO matchshoots( teamMatchID,  orderID, `mode`,  coordX,  coordY,  scored,  missed,  highLow)
-//                                      VALUES(:teamMatchID,  :orderID, :mode,  :coordX,  :coordY,  :scored,  :missed,  :highLow)";
-//          $stmt = $helper->con->prepare($query);
-//          $stmt->bindValue(":teamMatchID", $teamMatchID);
-//          $stmt->bindValue(":orderID", $record['orderID']);
-//          $stmt->bindValue(":mode", $record['mode']);
-//          $stmt->bindValue(":coordX", floatval($record['coordX']));
-//          $stmt->bindValue(":coordY", floatval($record['coordY']));
-//          $stmt->bindValue(":scored", intval($record['scored']));
-//          $stmt->bindValue(":missed", intval($record['missed']));
-//          $stmt->bindValue(":highLow", intval($record['highLow']));
-//          $stmt->execute();
-//        }
-//        catch (PDOException $e) {
-//          echo $e->getMessage();
-//          echo "matchSchoots";
-//          $helper->con->rollBack();
-//          echo "fail";
-//          return;
-//        }
-//
-//        break;
-//
-//
-//        $helper->con->commit();
-//        echo "Success";
-//    }
-//  }
-//
-
-//  $helper->con->commit();
-  echo "Success";
+  return;
 }
 
-postProcessTeamMatch(340,80,true);
+  $helper->con = $helper->connectToDB();
+  $helper->con->beginTransaction();
+
+  foreach($allRows as $record){
+
+    $query="";
+    $params = array();
+
+    switch($record['eventType']){
+      case "feedBall":
+
+        try {
+          $query = "INSERT INTO matchballfeeds(teamMatchID, orderID, `mode`, location, delta)
+                              VALUES (:teamMatchID, :orderID, :mode, :location, :delta)";
+          $stmt = $helper->con->prepare($query);
+          $stmt->bindValue(":teamMatchID", $teamMatchID);
+          $stmt->bindValue(":orderID", $record['orderID']);
+          $stmt->bindValue(":mode", $record['mode']);
+          $stmt->bindValue(":location", trim($record['location']));
+          $stmt->bindValue(":delta", $record['computedDelta']);
+          $stmt->execute();
+        }
+        catch (PDOException $e) {
+          echo $e->getMessage();
+          echo "feedBall";
+          $helper->con->rollBack();
+          echo "fail";
+          return;
+        }
+
+        break;
+
+      case "groundFeed":
+
+        try {
+          $query = "INSERT INTO matchballfeeds(teamMatchID, orderID, `mode`, location, delta)
+                              VALUES (:teamMatchID, :orderID, :mode, :location, :delta)";
+          $stmt = $helper->con->prepare($query);
+          $stmt->bindValue(":teamMatchID", $teamMatchID);
+          $stmt->bindValue(":orderID",null);
+          $stmt->bindValue(":mode", $record['mode']);
+          $stmt->bindValue(":location", "ground");
+          $stmt->bindValue(":delta", $record['delta']);
+          $stmt->execute();
+        }
+        catch (PDOException $e) {
+          echo $e->getMessage();
+          echo "groundFeed";
+          $helper->con->rollBack();
+          echo "fail";
+          return;
+        }
+
+        break;
+      case "shoot":
+
+        try {
+          $query = "INSERT INTO matchshoots( teamMatchID,  orderID, `mode`,  coordX,  coordY,  scored,  missed,  highLow)
+                                      VALUES(:teamMatchID,  :orderID, :mode,  :coordX,  :coordY,  :scored,  :missed,  :highLow)";
+          $stmt = $helper->con->prepare($query);
+          $stmt->bindValue(":teamMatchID", $teamMatchID);
+          $stmt->bindValue(":orderID", $record['orderID']);
+          $stmt->bindValue(":mode", $record['mode']);
+          $stmt->bindValue(":coordX", floatval($record['coordX']));
+          $stmt->bindValue(":coordY", floatval($record['coordY']));
+          $stmt->bindValue(":scored", intval($record['scored']));
+          $stmt->bindValue(":missed", intval($record['missed']));
+          $stmt->bindValue(":highLow", intval($record['highLow']));
+          $stmt->execute();
+        }
+        catch (PDOException $e) {
+          echo $e->getMessage();
+          echo "matchSchoots";
+          $helper->con->rollBack();
+          echo "fail";
+          return;
+        }
+
+        break;
+
+    }
+  }
+
+  foreach($discrepancies as $d){
+    try{
+      $query = "INSERT INTO postprocessdiscrepancies(teamMatchID, eventType, orderID, `mode`, `time`, expected, relationship, received, discrepancyType)
+                                            VALUES(:teamMatchID, :eventType, :orderID, :mode, :time, :expected, :relationship, :received, :discrepancyType) ";
+
+      $stmt = $helper->con->prepare($query);
+      $stmt->bindValue(":teamMatchID",$teamMatchID);
+      $stmt->bindValue(":eventType",$d['eventType']);
+      $stmt->bindValue(":orderID",$d['orderID']);
+      $stmt->bindValue(":mode",$d['mode']);
+      $stmt->bindValue(":time",$d['time']);
+      $stmt->bindValue(":expected",$d['expected']);
+      $stmt->bindValue(":relationship",$d['relationship']);
+      $stmt->bindValue(":received",$d['received']);
+      $stmt->bindValue(":discrepancyType",$d['discrepancyType']);
+      $stmt->execute();
+    }
+    catch (PDOException $e) {
+      echo $e->getMessage();
+      echo "discrepancies";
+      $helper->con->rollBack();
+      echo "fail";
+      return;
+    }
+
+  }
+
+  $helper->con->commit();
+//  echo "Success";
+
+}
+
+postProcessTeamMatch(568,58,false,true);
 
 ?>
