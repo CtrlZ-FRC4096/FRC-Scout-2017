@@ -194,12 +194,13 @@ $helper->con->commit();
 
 $pitQuery = "SELECT * FROM teampit WHERE teamNumber = :teamNumber";
 $result = $helper->queryDB($pitQuery,array(":teamNumber"=>$data->teamMatch->teamNumber), false);
-$result = $result[0];
-if($result['groundFeedsBalls'] !== null && $result['ballCapacity'] !== null){
+if(sizeof($result) > 0){
+  $result = $result[0];
+  if($result['groundFeedsBalls'] !== null && $result['ballCapacity'] !== null){
 //  echo "postprocessing";
-  postProcessTeamMatch($teamMatchID,intval($result['ballCapacity']), ($result['groundFeedsBalls'] == 1 ? true : false));
+    postProcessTeamMatch($teamMatchID,intval($result['ballCapacity']), ($result['groundFeedsBalls'] == 1 ? true : false));
+  }
 }
-
 
 echo "Success";
 

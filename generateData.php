@@ -20,11 +20,21 @@ $result = $helper->queryDB($query,$params,false);
 
 $scoutersQuery = $con->prepare("SELECT id from scouters");
 $scoutersQuery->execute();
-$scouters = $scoutersQuery->fetchAll(PDO::FETCH_COLUMN, 0);
+$scoutersFromDB = $scoutersQuery->fetchAll(PDO::FETCH_COLUMN, 0);
 
 $teamsQuery = $con->prepare("SELECT teamNumber from teams");
 $teamsQuery->execute();
 $teams = $teamsQuery->fetchAll(PDO::FETCH_COLUMN, 0);
+
+$teamMatchQuery = $con->prepare("SELECT id FROM teammatches");
+$teamMatchQuery->execute();
+$teammatches = $teamMatchQuery->fetchAll(PDO::FETCH_COLUMN, 0);
+$scouters = array();
+foreach($teammatches as $tmID){
+  shuffle($scoutersFromDB);
+  $scouters[$tmID] = array_slice($scoutersFromDB,0,6);
+}
+//var_dump($scouters);
 
 foreach($teams as $team){
   //CREATE TEAM PROFILE
@@ -243,6 +253,16 @@ foreach($teams as $team){
     );
     $helper->queryDB($autoQuery,$autoParams,true);
 
+
+    $updateTeamMatchQuery = "UPDATE teamMatches SET scouterID = :scouterID, postprocessed = 1, ready = 1, deviceID = 'qoMTbl' WHERE id = :id";
+    $posNumber = $teamMatch['position'] + ($teamMatch['side'] == "blue" ? 3 : 0) - 1;
+    $params = array(
+      ":id" => $teamMatch['id'],
+      ":scouterID" => $scouters[$teamMatch['id']][$posNumber]
+    );
+    var_dump($posNumber);
+    var_dump($params);
+    $helper->queryDB($updateTeamMatchQuery,$params,true);
 
     echo "<h2>Match {$teamMatch['id']}</h2><br />";
     echo "<b>AUTO</b><br>";
