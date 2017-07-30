@@ -24,7 +24,7 @@ foreach($data->actions as $record){
 
   switch($record->eventType){
     case "gear":
-
+//      var_dump($record);
       try {
         $query = "INSERT INTO matchgears( teamMatchID,  orderID, `mode`,  location,  result)
                                  VALUES (:teamMatchID, :orderID, :mode , :location, :result)";
@@ -32,7 +32,7 @@ foreach($data->actions as $record){
         $stmt->bindValue(":teamMatchID", $teamMatchID);
         $stmt->bindValue(":orderID", $record->orderID);
         $stmt->bindValue(":mode", $record->mode);
-        $stmt->bindValue(":location", trim($record->location));
+        $stmt->bindValue(":location", trim(substr($record->location,0,-4)));
         $stmt->bindValue(":result", intval($record->scoreMiss));
 
         $stmt->execute();
@@ -145,8 +145,8 @@ try {
     $stmt->execute();
 
   }
-  $query = "INSERT INTO matchratings( teamMatchID,  ballGroundFeeding,  ballLoadingLaneFeeding,  ballShootingSpeed,  gearGroundFeeding,  gearLoadingLaneFeeding,  gearPlacingSpeed,  abilityToDefend,  abilityToEscapeDefense)
-                              VALUES(:teamMatchID, :ballGroundFeeding, :ballLoadingLaneFeeding, :ballShootingSpeed, :gearGroundFeeding, :gearLoadingLaneFeeding, :gearPlacingSpeed, :abilityToDefend, :abilityToEscapeDefense)";
+  $query = "INSERT INTO matchratings( teamMatchID,  ballGroundFeeding,  ballLoadingLaneFeeding,  ballShootingSpeed,  gearGroundFeeding,  gearLoadingLaneFeeding,  gearPlacingSpeed,  abilityToDefend,  abilityToEscapeDefense, notes)
+                              VALUES(:teamMatchID, :ballGroundFeeding, :ballLoadingLaneFeeding, :ballShootingSpeed, :gearGroundFeeding, :gearLoadingLaneFeeding, :gearPlacingSpeed, :abilityToDefend, :abilityToEscapeDefense, :notes)";
   $stmt = $helper->con->prepare($query);
   $stmt->bindValue(":teamMatchID", $teamMatchID);
   $stmt->bindValue(":ballGroundFeeding", $data->otherFields->ballGroundFeedingRating);
@@ -157,6 +157,7 @@ try {
   $stmt->bindValue(":gearPlacingSpeed", $data->otherFields->gearPlacingSpeedRating);
   $stmt->bindValue(":abilityToDefend", $data->otherFields->defenseRating);
   $stmt->bindValue(":abilityToEscapeDefense", $data->otherFields->defenseEscapeRating);
+  $stmt->bindValue(":notes", $data->otherFields->notes);
   $stmt->execute();
 
   $query = "UPDATE teammatches SET collectionEnded = 1 WHERE id = :teamMatchID";

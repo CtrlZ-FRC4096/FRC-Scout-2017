@@ -10,9 +10,9 @@ class Helper {
 
   public $con;
 
-  public $LEFT_TEAM = "blue";
-  public $RIGHT_TEAM = "red";
-  public $BOILERS_POS = "far";
+  public $LEFT_TEAM = "red";
+  public $RIGHT_TEAM = "blue";
+  public $BOILERS_POS = "close";
   public $autoCycleDBConnection = true;
 
   const HALF_FIELD_LENGTH_INCHES = 492.7;
@@ -126,13 +126,18 @@ class Helper {
 
 
   public function addDevice($deviceID){
-    $query = "INSERT INTO devices(deviceID)
+    $query = "INSERT IGNORE INTO devices(deviceID)
                                    VALUES(:id)";
     $params = array(":id" => $deviceID);
     $result = $this->queryDB($query,$params, true);
     return $result;
   }
 
+  public function getDevices(){
+    $query = "SELECT * FROM devices";
+    $result = $this->queryDB($query,null, false);
+    return $result;
+  }
 
   public function getCurrentStatusOfUser($deviceID, $compID){
     $query = "SELECT *

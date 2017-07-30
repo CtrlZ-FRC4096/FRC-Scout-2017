@@ -130,7 +130,7 @@ $CURR_MATCH = null;
   $(document).ready(function(){
     localStorage.removeItem("matchData")
     var SELECTED_TEAM = 0;
-
+    var availableDevices = [<?php ?>]
     if (typeof Cookies.get('deviceID') === 'undefined'){
       <?php
       $randomID = $helper->getRandomDeviceID();

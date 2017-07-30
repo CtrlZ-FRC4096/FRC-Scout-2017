@@ -176,7 +176,7 @@ $BOILERS_POS = "boilers" . ucwords($helper->BOILERS_POS);
     <h1 class="darkBlue">Other</h1>
   </div>
 </div>
-<div style="align-items: center; flex: 1; display: flex;flex-direction: column">
+<div id="contentBody" style="align-items: center; flex: 1; display: flex;flex-direction: column">
   <div class="row" style="flex:1;width: 100%;display:flex;justify-content: space-around;flex-direction: row">
     <div id="gearPage" style="display:flex;flex: 0 1 70%;flex-direction:column;">
       <div style="margin: 15px;flex: 1; display: flex;">
@@ -236,7 +236,7 @@ $BOILERS_POS = "boilers" . ucwords($helper->BOILERS_POS);
               display:flex;align-items:center;flex: 1
             }
             #feedBallPercentage, #feedBall, #feedBallCount{
-              cursor: pointer; display: flex; flex-direction: column; flex: 0 1 200px; width: 100%;
+              cursor: pointer; display: flex; flex-direction: column; flex: 0 1 260px; width: 100%;
             }
             #feedBallPercentageOptions,#feedGearOutcomeOptions,#feedGearMethodOptions, #feedBallCountOptions{
               cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;border: 2px solid black;min-height:46px
@@ -267,8 +267,14 @@ $BOILERS_POS = "boilers" . ucwords($helper->BOILERS_POS);
               </div>
             </div>
             <div id="feedBall" style="display: none">
-              <div id="feedBallPercentage">
+              <div id="feedBallPercentage" style="display:none">
                 <h2 style=" margin: 0;text-align:center ">Percentage of Robot's Ball Pit:</h2>
+                <div style="width: 100%;display:flex;flex-direction: row;flex: 1 1 65px;margin-top:10px">
+                  <div data-action="increment" data-for="feedBallPercentageBefore" style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='numericStepper button button-flat-action'><h1>+</h1></div>
+                  <div data-action="decrement" data-for="feedBallPercentageBefore" style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='numericStepper button button-flat-caution'><h1>-</h1></div>
+                  <div data-action="increment" data-for="feedBallPercentageAfter"  style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='numericStepper button button-flat-action'><h1>+</h1></div>
+                  <div data-action="decrement" data-for="feedBallPercentageAfter"  style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='numericStepper button button-flat-caution'><h1>-</h1></div>
+                </div>
                 <div id="feedBallPercentageOptions" style="">
                   <div id="feedBallPercentageBefore" style="/">
                     <span>Before %</span>
@@ -284,8 +290,12 @@ $BOILERS_POS = "boilers" . ucwords($helper->BOILERS_POS);
                    class="button button-pill button-primary ">Add</a>
                 <a id="feedBallSwitchToCount" style="color:#4d00ff; margin-top: 15px; text-align:right">Give Count</a>
               </div>
-              <div id="feedBallCount" style="display:none">
+              <div id="feedBallCount">
                 <h2 style=" margin: 0;text-align:center;">Number of Balls Fed:</h2>
+                <div style="width: 100%;display:flex;flex-direction: row;flex: 1 1 65px;margin-top:10px">
+                  <div data-action="increment" data-for="feedBallAmount" style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-action  numericStepper'><h1>+</h1></div>
+                  <div data-action="decrement" data-for="feedBallAmount" style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-caution numericStepper'><h1>-</h1></div>
+               </div>
                 <div id="feedBallCountOptions" style="">
                   <div id="feedBallAmount" style="/">
                     <input autofocus maxlength="3" onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" pattern="[0-9]{3}" inputmode="numeric" min="0" step="1" placeholder="50">
@@ -350,7 +360,7 @@ $BOILERS_POS = "boilers" . ucwords($helper->BOILERS_POS);
               display:flex;align-items:center;flex: 1
             }
             #shootPercentages,#shootCounts{
-              cursor: pointer; display: flex; flex-direction: column; flex: 0 1 213px; width: 100%;
+              cursor: pointer; display: flex; flex-direction: column; flex: 0 1 278px; width: 100%;
             }
             #shootPercentageOptions,#shootCountOptions{
               cursor:pointer;display:flex;flex-direction:row;flex: 0 1 80px; width: 100%; margin: 5% auto 5% auto;;min-height:46px;border:2px solid black;
@@ -358,7 +368,7 @@ $BOILERS_POS = "boilers" . ucwords($helper->BOILERS_POS);
             .shootInputContainer{
               display:flex;align-items:center;flex: 1;flex-direction:column;justify-content: center;
             }
-            #shootPercentageAfter,#shootPercentageBefore,#shootCountScores,#shootHighOption,#shootCountMisses{
+            #shootPercentageAfter,#shootPercentageBefore,#shootCountAttempted,#shootHighOption,#shootCountAccuracy{
               border-right: 2px solid black;
             }
             .shootInputContainer input{
@@ -379,8 +389,16 @@ $BOILERS_POS = "boilers" . ucwords($helper->BOILERS_POS);
                 <h2 style="font-weight:bold;flex: 1;text-align: center"><span class="keyboard_shortcut">L</span>ow</h2>
               </div>
             </div>
-            <div id="shootPercentages"  style="">
+            <div id="shootPercentages" style="display:none">
               <h2 style=" margin: 0;text-align:center ">Percentage of Robot's Ball Pit:</h2>
+              <div style="width: 100%;display:flex;flex-direction: row;flex: 1 1 65px;margin-top:10px">
+                <div data-action="increment" data-for="shootPercentageBefore"   style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-action numericStepper'><h1>+</h1></div>
+                <div data-action="decrement" data-for="shootPercentageBefore"   style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-caution numericStepper'><h1>-</h1></div>
+                <div data-action="increment" data-for="shootPercentageAfter"    style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-action numericStepper'><h1>+</h1></div>
+                <div data-action="decrement" data-for="shootPercentageAfter"    style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-caution numericStepper'><h1>-</h1></div>
+                <div data-action="increment" data-for="shootPercentageAccuracy" style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-action numericStepper'><h1>+</h1></div>
+                <div data-action="decrement" data-for="shootPercentageAccuracy" style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-caution numericStepper'><h1>-</h1></div>
+             </div>
               <div id="shootPercentageOptions" style="">
                 <div id="shootPercentageBefore" class="shootInputContainer" style="/">
                   <span>% Before</span>
@@ -400,16 +418,24 @@ $BOILERS_POS = "boilers" . ucwords($helper->BOILERS_POS);
                  class="button button-pill button-primary ">Add</a>
               <a id="shootSwitchToCount" style="color:#4d00ff; margin-top: 15px; text-align:right">Give Count</a>
             </div>
-            <div id="shootCounts" style="display:none">
+            <div id="shootCounts" >
               <h2 style=" margin: 0; text-align:center">Count the balls shot:</h2>
+              <div style="width: 100%;display:flex;flex-direction: row;flex: 1 1 65px;margin-top:10px">
+                <div data-action="increment" data-for="shootCountAttempted"   style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-action numericStepper'><h1>+</h1></div>
+                <div data-action="decrement" data-for="shootCountAttempted"   style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-caution numericStepper'><h1>-</h1></div>
+                <div data-action="increment" data-for="shootCountAccuracy"    style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-action numericStepper'><h1>+</h1></div>
+                <div data-action="decrement" data-for="shootCountAccuracy"    style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-caution numericStepper'><h1>-</h1></div>
+                <div data-action="increment" data-for="shootCountLeftoverPercentage" style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-action numericStepper'><h1>+</h1></div>
+                <div data-action="decrement" data-for="shootCountLeftoverPercentage" style="flex: 1 1;height:100%;display:flex;align-items:center;justify-content:center;min-width: 0;padding:0" class='button button-flat-caution numericStepper'><h1>-</h1></div>
+              </div>
               <div id="shootCountOptions" style="">
-                <div id="shootCountScores" class="shootInputContainer"  style="/">
-                  <span>Scored</span>
+                <div id="shootCountAttempted" class="shootInputContainer"  style="/">
+                  <span>Attempts</span>
                   <input autofocus onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" inputmode="numeric" min="0" step="1">
                 </div>
-                <div id="shootCountMisses" class="shootInputContainer" style="/">
-                  <span>Missed</span>
-                  <input  onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" inputmode="numeric" min="0" step="1">
+                <div id="shootCountAccuracy" class="shootInputContainer" style="/">
+                  <span>% Scored</span>
+                  <input  onkeypress="return restrictCharacters(this, event, /[0-9]/g);" type="number" inputmode="numeric" min="0" max="100" step="5">
                 </div>
                 <div id="shootCountLeftoverPercentage" class="shootInputContainer" style="/">
                   <span>% Ball Pit Left</span>
@@ -610,7 +636,7 @@ var SHOOT_AMT_COUNT_LEFTOVER = 0;
 
 var GEAR_LOCATION = null;
 var GEAR_RESULT = null;
-
+var NUMERIC_STEPPER_INTERVAL = null;
 var FEED_BALL_LOCATION = null;
 var FEED_BALL_PERCENT_START = null;
 var FEED_BALL_PERCENT_END = null;
@@ -620,6 +646,7 @@ var FEED_GEAR_METHOD = null;
 
 var RESUMING_MATCH =localStorage.getItem("matchData") !== null && localStorage.getItem("matchData") != "";
 var LEFT_TEAM_COLOR = "<?=($helper->LEFT_TEAM)?>";
+var SCOUTING_TEAM_COLOR = "<?=$SCOUTING_TEAM_COLOR?>";
 
 var feedSVG_IDS = ["overflowHolder","returnFarHolder","returnCloseHolder","boilerSideCloseHolder","boilerSideMiddleHolder","boilerSideFarHolder","loadingSideCloseHolder","loadingSideFarHolder"]
 $(document).ready(function () {
@@ -667,7 +694,7 @@ $(document).ready(function () {
                 SHOOT_ACCURACY_PERCENT = parseInt(action.accuracy);
                 SHOOT_AMT_COUNT_SCORED = parseInt(action.scored);
                 SHOOT_AMT_COUNT_MISSED = parseInt(action.missed);
-                SHOOT_AMT_COUNT_MISSED = parseInt(action.leftover);
+                SHOOT_AMT_COUNT_LEFTOVER = parseInt(action.leftover);
                 checkAndAddShootHistoryItem(action.mode, action.inputMethod);
                 break;
               case "gear" :
@@ -710,10 +737,30 @@ $(document).ready(function () {
         $("#resumingMatchNotice").fadeOut(600);
 
       });
-
-
   }
+  $("#contentBody").click(function(e){
+    if(e.target.tagName !== "INPUT"){
 
+      focusOnAvailableInput();
+    }
+  });
+  $(".numericStepper").mousedown(function(){
+    var _this = this;
+      NUMERIC_STEPPER_INTERVAL = setInterval(function(){
+        var id = $(_this).attr("data-for");
+        var step = $("#"+ id + " input").attr("step") || 1;
+        var factor = $(_this).attr("data-action") == "increment" ? 1 : -1
+        var min = $("#"+ id + " input").attr("min") || -9007199254740991;
+        var max = $("#"+ id + " input").attr("max") ||  9007199254740991;
+        var val = $("#"+ id + " input").val() || 0
+        if(parseInt(val) + (step*factor) <= max && parseInt(val) + (step*factor) >= min){
+          $("#"+ id + " input").val(parseInt(val) + (step*factor));
+        }
+      },100)
+  }).mouseup(function(){
+    var _this = this;
+    clearInterval(NUMERIC_STEPPER_INTERVAL);
+  });
   $("#cancelFeed").click(function(){
     clearFeed();
   });
@@ -749,7 +796,6 @@ $(document).ready(function () {
 
     $("#gearPage,#feedPage,#shootPage,#otherFieldsPage").css("flex", "0").css("width", "0").css("height", "0").css("overflow", "hidden");
     $("#" + $(this).attr("div-id")).css("flex", "0 1 70%").css("width", "").css("height", "").css("overflow", "");
-    focusOnAvailableInput();
     generateJSON();
   });
   $("#historyList").on("click", ".deleteHistoryItem", function () {
@@ -767,7 +813,6 @@ $(document).ready(function () {
     }
 
   });
-
   $("#shootPage #shootSwitchToPercentage").click(function(){
     $("#shootPage #shootCounts").hide();
     $("#shootPage #shootPercentages").show();
@@ -781,22 +826,16 @@ $(document).ready(function () {
     focusOnAvailableInput();
   });
   $("#shootPage #submitShootCount").click(function () {
-    var scored = $("#shootCountScores input").val();
-    var missed = $("#shootCountMisses input").val();
+    var attempted = $("#shootCountAttempted input").val();
+    var accuracy = $("#shootCountAccuracy input").val();
     var leftover = $("#shootCountLeftoverPercentage input").val();
     var errors = false;
-    if(scored != ""){
-      SHOOT_AMT_COUNT_SCORED = scored;
+    if(attempted != "" && accuracy != ""){
+      SHOOT_AMT_COUNT_SCORED = Math.round(attempted * (parseInt(accuracy)/100));
+      SHOOT_AMT_COUNT_MISSED = attempted - SHOOT_AMT_COUNT_SCORED;
     }
     else{
-      toastr["error"]("Please fill out and try again", "A scored count is required!");
-      errors = true;
-    }
-    if(missed != ""){
-      SHOOT_AMT_COUNT_MISSED = missed;
-    }
-    else{
-      toastr["error"]("Please fill out and try again", "A missed count is required!");
+      toastr["error"]("Please fill out and try again", "A attempted count and accuracy is required!");
       errors = true;
     }
     if(leftover != ""){
@@ -985,6 +1024,7 @@ var climbTimer;
     if($(this).hasClass("disabled")){return;}
     $(this).addClass("disabled");
     $("#climbTimer").text( "0:00 mins");
+    sec = 0;
     generateJSON();
   });
 
@@ -1477,8 +1517,8 @@ function clearShoot(){
   d3.select(shootSVGDoc.getElementById("shootPosition")).transition().duration(400).style("opacity", 0).each("end", function(){
     d3.select(shootSVGDoc.getElementById("shootPosition")).remove();
   });
-  $("#shootPage #shootCountScores input, " +
-    "#shootPage #shootCountMisses input, " +
+  $("#shootPage #shootCountAttempted input, " +
+    "#shootPage #shootCountAccuracy input, " +
     "#shootPage #shootPercentageBefore input, " +
     "#shootPage #shootPercentageAfter input, " +
     "#shootPage #shootPercentageAccuracy input")
@@ -1643,7 +1683,11 @@ function clearFeed(){
 }
 document.onkeyup = handleKeypress;
 function handleKeypress(e){
-    if(e.target.tagName == "INPUT" || e.target.tagName == "TEXTAREA"){
+  var char = String.fromCharCode(e.keyCode).toUpperCase();
+  if (e.ctrlKey && char == "M"){
+    $("#modeHeading").trigger("click");
+  }
+  if(e.target.tagName == "INPUT" || e.target.tagName == "TEXTAREA"){
       return;
     }
     if(e.code.indexOf("Digit") > -1){
@@ -1655,6 +1699,7 @@ function handleKeypress(e){
     else if (e.keyCode == 90 && e.ctrlKey){ //Ctrl-Z!
       $("#historyList div.historyItem").eq(0).find(".deleteHistoryItem").trigger("click")
     }
+
     else if($("#feedPage").css("flex-basis") != "0%"){
       handleFeedPageKeyPress(e);
     }
@@ -1719,6 +1764,30 @@ function handleGearPageKeyPress(e){
   }
   else if(char == "M"){
     $("#gearPage #gearMiss").trigger("click");
+  }
+  else if(char == "Q"){
+    if(SCOUTING_TEAM_COLOR == "red"){
+      var elem = (gearSVGDoc.getElementById("leftGearHolder"));
+    }
+    else{
+      var elem = (gearSVGDoc.getElementById("rightGearHolder"));
+    }
+    var ev = {target: elem};
+    gearSVGDocClick(ev);
+  }
+  else if(char == "A"){
+    var elem = (gearSVGDoc.getElementById("centerGearHolder"));
+    var ev = {target: elem};
+    gearSVGDocClick(ev);  }
+  else if(char == "Z"){
+    if(SCOUTING_TEAM_COLOR == "red"){
+      var elem = (gearSVGDoc.getElementById("rightGearHolder"));
+    }
+    else{
+      var elem = (gearSVGDoc.getElementById("leftGearHolder"));
+    }
+    var ev = {target: elem};
+    gearSVGDocClick(ev);
   }
 }
 function handleShootPageKeyPress(e){

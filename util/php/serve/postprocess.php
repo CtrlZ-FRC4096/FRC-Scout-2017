@@ -7,6 +7,15 @@
  */
 include($_SERVER['DOCUMENT_ROOT']."/util/php/include_classes.php");
 
+function cmp($a,$b){
+  if($a["mode"] == $b["mode"]){
+    return ($a['orderID'] < $b['orderID'] ? -1: 1);
+  }
+  else{
+    return ($a['mode'] == "tele" ? 1 : -1);
+  }
+}
+
 function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder, $debug=false){
   $helper = new Helper();
   $query = "SELECT * FROM matchballfeeds_preprocess WHERE teamMatchID = :teamMatchID";
@@ -20,14 +29,7 @@ function postProcessTeamMatch($teamMatchID,$ballCapacity, $hasGroundFeeder, $deb
     $feedRow['eventType'] = "shoot";
   }
   $allRows = array_merge($feedRows,$shootRows);
-  function cmp($a,$b){
-    if($a["mode"] == $b["mode"]){
-      return ($a['orderID'] < $b['orderID'] ? -1: 1);
-    }
-    else{
-      return ($a['mode'] == "tele" ? 1 : -1);
-    }
-  }
+
   usort($allRows,'cmp');
 //  var_dump($allRows);
   $tank = 0;
@@ -299,7 +301,21 @@ if($debug){
 //  echo "Success";
 
 }
-
-//postProcessTeamMatch(568,58,false,true);
-
+////6651
+//postProcessTeamMatch(244,60,true,false);
+//postProcessTeamMatch(14,60,true,false);
+//postProcessTeamMatch(101,60,true,false);
+//postProcessTeamMatch(431,60,true,false);
+//postProcessTeamMatch(277,60,true,false);
+//////1405
+//postProcessTeamMatch(8,50,true,false);
+//postProcessTeamMatch(172,50,true,false);
+//postProcessTeamMatch(265,50,true,false);
+//postProcessTeamMatch(31,50,true,false);
+//postProcessTeamMatch(361,50,true,false);
+//////5350
+//postProcessTeamMatch(255,20,false,false);
+//postProcessTeamMatch(186,20,false,false);
+//postProcessTeamMatch(434,20,false,false);
+//postProcessTeamMatch(39,20,false,false);
 ?>

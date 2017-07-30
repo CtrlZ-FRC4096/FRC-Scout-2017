@@ -46,7 +46,7 @@ foreach(json_decode($_POST['matchNumbers']) as $matchNumber){
     $teamMatch['collectionEnded'] = $teamMatchRow['collectionEnded'];
     $teamMatch['scouterID'] = $teamMatchRow['scouterID'];
     $teamMatch['postprocessed'] = $teamMatchRow['postprocessed'];
-    $teamMatch['ready'] = $teamMatchRow['collectionEnded'];
+    $teamMatch['ready'] = $teamMatchRow['ready'];
 
     $teamMatch['ballfeeds'] = array();
     $query = "SELECT * FROM matchballfeeds WHERE teamMatchID = :teamMatchID";

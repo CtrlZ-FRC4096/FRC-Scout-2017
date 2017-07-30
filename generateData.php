@@ -54,6 +54,8 @@ foreach($teams as $team){
   $lowShootsVariability = rand(0,100);
   $actionsPerMatch = rand(0,20);
   $actionsVariability = rand(0,6);
+  $climbs = rand(0,1);
+  $climbAccuracy = rand(0,100);
 
   $autoFeeds = rand(0,1) && $loadingLaneFeedsBalls && $shoots;
   $autoShoots = rand(0,1) && $shoots;
@@ -65,6 +67,10 @@ foreach($teams as $team){
   $teleShootsLow = (rand(0,1) && $shootsLow) || (!$autoShootLevelHigh && $autoShoots);
   $ballCapacity = $shoots ? rand(20,80) : 0;
   $teleGear = $gears;
+
+
+
+
 
   echo
 "<h1>$team</h1>" .
@@ -95,8 +101,27 @@ foreach($teams as $team){
 "<tr><td>ballCapacity</td><td>" . $ballCapacity . "</td></tr>".
 "<tr><td>teleGear</td><td>" . b($teleGear) . "</td></tr>".
 "</table>";
-
-
+//
+//  $query = "INSERT INTO teampit(teamNumber, climbs, gears, lowShoots, highShoots, groundFeedsBalls, hoppers, loadingLanesBalls, groundFeedsGears, loadingLanesGears, ballCapacity, abilityToAddClimber, cameraFeeds, visionTracking)
+//                        VALUES (:teamNumber, :climbs, :gears, :lowShoots, :highShoots, :groundFeedsBalls, :hoppers, :loadingLanesBalls, :groundFeedsGears, :loadingLanesGears, :ballCapacity, :abilityToAddClimber, :cameraFeeds, :visionTracking)";
+//
+//  $params = array(
+//    ":teamNumber" => $team,
+//    ":climbs" => $climbs,
+//    ":gears" => $gears,
+//    ":lowShoots" => $teleShootsLow,
+//    ":highShoots" => $teleShootsHigh,
+//    ":groundFeedsBalls" => $groundFeedsBalls,
+//    ":hoppers" => $loadingLaneFeedsBalls,
+//    ":loadingLanesBalls" => $loadingLaneFeedsBalls,
+//    ":groundFeedsGears" => $groundFeedsGears,
+//    ":loadingLanesGears" => $loadingLaneFeedsGears,
+//    ":ballCapacity" => $ballCapacity,
+//    ":abilityToAddClimber" => rand(0,1),
+//    ":cameraFeeds" => rand(0,1),
+//    ":visionTracking" => rand(0,1)
+//  );
+//    $result = $helper->queryDB($query,$params,false);
 
 
   $query = "SELECT * FROM teammatches WHERE teamNumber=:team;";
@@ -150,7 +175,8 @@ foreach($teams as $team){
       if($action == "gear" && $gears){
         if($possessingGear){
           $success = rand(0,100) < $gearSuccess;
-          array_push($teleActions,createGearAction("center",$success));
+          $gearLocs = ['left','right','center'];
+          array_push($teleActions,createGearAction($gearLocs[array_rand($gearLocs )],$success));
           $possessingGear = false;
           continue;
         }
@@ -196,6 +222,14 @@ foreach($teams as $team){
       }
     }
 
+    $climbQuery = "INSERT INTO matchclimbs(teamMatchID, touchpad, duration) VALUES(:teamMatchID, :touchpad, :duration)";
+    $climbParams = array(
+      ":teamMatchID" => $teamMatch["id"],
+      ":touchpad" => $climbs ? (rand(0,100) < $climbAccuracy ? 1 : 0) : 0,
+      ":duration" => $climbs ? rand(0,60) : 0
+    );
+    $helper->queryDB($climbQuery,$climbParams,true);
+
     //RATINGS
 
 //    $ballShootAccuracyRating = rand(0.7*arr_avg([$highShootsAccuracy,$lowShootsAccuracy]),1.3*arr_avg([$highShootsAccuracy,$lowShootsAccuracy]));
@@ -232,6 +266,7 @@ foreach($teams as $team){
       $helper->queryDB($autoAction["query"],$autoAction["params"],true);
       $counter +=1;
     }
+    $counter = 1;
     foreach($teleActions as &$teleAction){
       $teleAction["params"][":teamMatchID"] = intval($teamMatch['id']);
       $teleAction["params"][":orderID"] = $counter;

@@ -36,32 +36,31 @@ foreach($data['matchData'] as $match){
   $matchID = $result[0]['id'];
 
 
-  foreach($match['matchDefenses'] as $defense){
-    $query = "INSERT INTO matchdefenses(matchID, side, slot, defenseID) VALUES (:matchID,:side,:slot,:defenseID)
-              ON DUPLICATE KEY UPDATE matchID = VALUES(matchID),side = VALUES(side),slot = VALUES(slot),defenseID = VALUES(defenseID)";
-
-
-    $params = array(
-      ":matchID" => $matchID,
-      ":side" => $defense['side'],
-      ":slot" => $defense['slot'],
-      ":defenseID" => $defense['defenseID']
-    );
-    $helper->queryDB($query,$params,false);
-  }
-
-
-
-  $query = "SELECT COALESCE(sum(a), 0)  as ct FROM (SELECT COUNT(*) as a FROM matchBreaches WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID1)
+  $query = "SELECT COALESCE(sum(a), 0)  as ct FROM (
+            SELECT COUNT(*) as a FROM matchballfeeds WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID1)
             UNION
-            SELECT COUNT(*) as a FROM matchClimbs WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID2)
+            SELECT COUNT(*) as a FROM matchgearfeeds WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID2)
             UNION
-            SELECT COUNT(*) as a FROM matchFeeds WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID3)
+            SELECT COUNT(*) as a FROM matchgears WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID3)
             UNION
-            SELECT COUNT(*) as a FROM matchShoots WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID4)) as b
+            SELECT COUNT(*) as a FROM matchshoots WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID4)
+            UNION
+            SELECT COUNT(*) as a FROM matchclimbs WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID5)
+            UNION
+            SELECT COUNT(*) as a FROM matchautos WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID6)
+            UNION
+            SELECT COUNT(*) as a FROM matchratings WHERE teamMatchID IN (SELECT id FROM teamMatches WHERE matchID = :matchID7)) as b
 ";
 
-  $params = array(":matchID1" => $matchID,":matchID2" => $matchID,":matchID3" => $matchID,":matchID4" => $matchID);
+  $params = array(
+    ":matchID1" => $matchID,
+    ":matchID2" => $matchID,
+    ":matchID3" => $matchID,
+    ":matchID4" => $matchID,
+    ":matchID5" => $matchID,
+    ":matchID6" => $matchID,
+    ":matchID7" => $matchID
+  );
 
   $result = $helper->queryDB($query,$params,false);
   if($result[0]['ct'] > 0){
@@ -70,24 +69,23 @@ foreach($data['matchData'] as $match){
   else{
     $matchAction = "Added";
   }
-  $query = "DELETE FROM matchBreaches WHERE teamMatchID IN (
-              SELECT id FROM teammatches WHERE matchID = :matchID)";
-
-  $params = array(":matchID" => $matchID);
-  $result = $helper->queryDB($query,$params,false);
-
-  $query = "DELETE FROM matchFeeds WHERE teamMatchID IN (
-              SELECT id FROM teammatches WHERE matchID = :matchID)";
-  $result = $helper->queryDB($query,$params,false);
-
-  $query = "DELETE FROM matchShoots WHERE teamMatchID IN (
-              SELECT id FROM teammatches WHERE matchID = :matchID)";
-  $result = $helper->queryDB($query,$params,false);
-
-  $query = "DELETE FROM matchClimbs WHERE teamMatchID IN (
-              SELECT id FROM teammatches WHERE matchID = :matchID)";
-
-  $result = $helper->queryDB($query,$params,false);
+  $params = array(
+    ":matchID" => $matchID
+  );
+  $query = "DELETE FROM matchautos      WHERE teamMatchID IN (SELECT id FROM teammatches WHERE matchID = :matchID)";
+    $result = $helper->queryDB($query,$params,false);
+  $query = "DELETE FROM matchclimbs     WHERE teamMatchID IN (SELECT id FROM teammatches WHERE matchID = :matchID)";
+    $result = $helper->queryDB($query,$params,false);
+  $query = "DELETE FROM matchgearfeeds  WHERE teamMatchID IN (SELECT id FROM teammatches WHERE matchID = :matchID)";
+    $result = $helper->queryDB($query,$params,false);
+  $query = "DELETE FROM matchgears      WHERE teamMatchID IN (SELECT id FROM teammatches WHERE matchID = :matchID)";
+    $result = $helper->queryDB($query,$params,false);
+  $query = "DELETE FROM matchratings    WHERE teamMatchID IN (SELECT id FROM teammatches WHERE matchID = :matchID)";
+    $result = $helper->queryDB($query,$params,false);
+  $query = "DELETE FROM matchballfeeds  WHERE teamMatchID IN (SELECT id FROM teammatches WHERE matchID = :matchID)";
+    $result = $helper->queryDB($query,$params,false);
+  $query = "DELETE FROM matchshoots     WHERE teamMatchID IN (SELECT id FROM teammatches WHERE matchID = :matchID)";
+    $result = $helper->queryDB($query,$params,false);
 
 
   $teams = array();
@@ -117,7 +115,10 @@ foreach($data['matchData'] as $match){
                     teamNumber,
                     deviceID,
                     collectionStarted,
-                    collectionEnded)
+                    collectionEnded,
+                    scouterID,
+                    postprocessed,
+                    ready)
                     VALUES(
                     :matchID,
                     :side,
@@ -125,7 +126,10 @@ foreach($data['matchData'] as $match){
                     :teamNumber,
                     :deviceID,
                     :collectionStarted,
-                    :collectionEnded
+                    :collectionEnded,
+                    :scouterID,
+                    :postprocessed,
+                    :ready
                     )";
       $params = array(
         ":matchID" => $teamMatch['matchID'],
@@ -135,6 +139,9 @@ foreach($data['matchData'] as $match){
         ":deviceID" => $teamMatch['deviceID'],
         ":collectionStarted" => $teamMatch['collectionStarted'],
         ":collectionEnded" => $teamMatch['collectionEnded'],
+        ":scouterID" => $teamMatch['scouterID'],
+        ":postprocessed" => $teamMatch['postprocessed'],
+        ":ready" => $teamMatch['ready']
       );
       $helper->queryDB($query,$params,true);
 
@@ -143,13 +150,17 @@ foreach($data['matchData'] as $match){
 
 
     $query = "UPDATE teamMatches
-              SET matchID = :matchID,
-              side = :side,
-              position = :position,
-              teamNumber = :teamNumber,
-              deviceID = :deviceID,
-              collectionEnded = :collectionEnded,
-              collectionStarted = :collectionStarted
+              SET
+                    matchID = :matchID,
+                    side = :side,
+                    position = :position,
+                    teamNumber = :teamNumber,
+                    deviceID = :deviceID,
+                    collectionStarted = :collectionStarted,
+                    collectionEnded = :collectionEnded,
+                    scouterID = :scouterID,
+                    postprocessed = :postprocessed,
+                    ready = :ready
               WHERE id = :id";
 
     $params = array(
@@ -160,59 +171,89 @@ foreach($data['matchData'] as $match){
       ":deviceID" => $teamMatch['deviceID'],
       ":collectionStarted" => $teamMatch['collectionStarted'],
       ":collectionEnded" => $teamMatch['collectionEnded'],
+      ":scouterID" => $teamMatch['scouterID'],
+      ":postprocessed" => $teamMatch['postprocessed'],
+      ":ready" => $teamMatch['ready'],
       ":id" => $teamMatch['id']
     );
     $helper->queryDB($query,$params,true);
 
-    foreach($teamMatch['breaches'] as $breach){
-      $query = "INSERT INTO matchbreaches(teamMatchID, orderID, `mode`, startZone, defenseID, endZone, fail) VALUES(:teamMatchID, :orderID, :mode, :startZone, :defenseID, :endZone, :fail)";
+    foreach($teamMatch['ballfeeds'] as $ballfeed){
+      $query = "INSERT INTO matchballfeeds(teamMatchID, orderID, `mode`, delta, location) VALUES(:teamMatchID, :orderID, :mode, :delta, :location)";
       $params = array(":teamMatchID" => $teamMatch['id'],
-                      ":orderID" => $breach['orderID'],
-                      ":mode" => $breach['mode'],
-                      ":startZone" => $breach['startZone'],
-                      ":defenseID" => $breach['defenseID'],
-                      ":endZone" => $breach['endZone'],
-                      ":fail" => $breach['fail']);
+                      ":orderID" => $ballfeed['orderID'],
+                      ":mode" => $ballfeed['mode'],
+                      ":delta" => $ballfeed['delta'],
+                      ":location" => $ballfeed['location']);
       $helper->queryDB($query,$params,false);
     }
-    foreach($teamMatch['feeds'] as $feed){
-      $query = "INSERT INTO matchfeeds(teamMatchID, orderID, `mode`, zoneID) VALUES (:teamMatchID, :orderID, :mode, :zoneID)";
+    foreach($teamMatch['gearfeeds'] as $gear){
+      $query = "INSERT INTO matchgearfeeds(teamMatchID, orderID, `mode`, result, method) VALUES (:teamMatchID, :orderID, :mode, :result, :method)";
       $params = array(":teamMatchID" => $teamMatch['id'],
-                      ":orderID" => $feed['orderID'],
-                      ":mode" => $feed['mode'],
-                      ":zoneID" => $feed['zoneID']);
+                      ":orderID" => $gear['orderID'],
+                      ":mode" => $gear['mode'],
+                      ":result" => $gear['result'],
+                      ":method" => $gear['method']
+      );
       $helper->queryDB($query,$params,false);
 
     }
     foreach($teamMatch['shoots'] as $shoot){
 
-      $query = "INSERT INTO matchshoots(teamMatchID, orderID, `mode`,coordX , coordY, highLow, scoreMiss) VALUES (:teamMatchID, :orderID, :mode, :coordX, :coordY, :highLow, :scoreMiss)";
+      $query = "INSERT INTO matchshoots(teamMatchID, orderID, `mode`, coordX, coordY, highLow, scored, missed) VALUES (:teamMatchID, :orderID, :mode, :coordX, :coordY, :highLow, :scored, :missed)";
       $params = array(":teamMatchID" => $teamMatch['id'],
         ":orderID" => $shoot['orderID'],
         ":mode" => $shoot['mode'],
         ":coordX" => $shoot['coordX'],
         ":coordY" => $shoot['coordY'],
         ":highLow" => $shoot['highLow'],
-        ":scoreMiss" => $shoot['scoreMiss'],
+        ":scored" => $shoot['scored'],
+        ":missed" => $shoot['missed']
       );
       $helper->queryDB($query,$params,false);
+    }
 
-
+    foreach($teamMatch['gears'] as $gear){
+      $query = "INSERT INTO matchgears(teamMatchID, orderID, `mode`, location, result) VALUES (:teamMatchID, :orderID, :mode, :location, :result)";
+      $params = array(":teamMatchID" => $teamMatch['id'],
+        ":orderID" => $gear['orderID'],
+        ":mode" => $gear['mode'],
+        ":location" => $gear['location'],
+        ":result" => $gear['result']
+      );
+      $helper->queryDB($query,$params,false);
     }
     foreach($teamMatch['climbs'] as $climb){
-      $query = "INSERT INTO matchclimbs(teamMatchID, `mode`, batterReached, duration, offensiveRating, defensiveRating,success)
-                    VALUES(:teamMatchID, :mode, :batterReached, :duration, :offensiveRating, :defensiveRating,:success)";
-
+      $query = "INSERT INTO matchclimbs(teamMatchID, touchpad, duration) VALUES (:teamMatchID, :touchpad, :duration)";
       $params = array(":teamMatchID" => $teamMatch['id'],
-      ":mode" => $climb['mode'],
-      ":batterReached" => $climb['batterReached'],
-      ":duration" => $climb['duration'],
-      ":offensiveRating" => $climb['offensiveRating'],
-      ":defensiveRating" => $climb['defensiveRating'],
-      ":success" => $climb['success']);
+        ":touchpad" => $climb['touchpad'],
+        ":duration" => $climb['duration']
+      );
       $helper->queryDB($query,$params,false);
-
     }
+    foreach($teamMatch['autos'] as $auto){
+      $query = "INSERT INTO matchautos(teamMatchID, crossedLine) VALUES (:teamMatchID, :crossedLine)";
+      $params = array(":teamMatchID" => $teamMatch['id'],
+        ":crossedLine" => $auto['crossedLine']
+      );
+      $helper->queryDB($query,$params,false);
+    }
+    foreach($teamMatch['ratings'] as $rating){
+      $query = "INSERT INTO matchratings(teamMatchID, ballGroundFeeding, ballLoadingLaneFeeding, ballShootingSpeed, gearGroundFeeding, gearLoadingLaneFeeding, gearPlacingSpeed, abilityToDefend, abilityToEscapeDefense) VALUES (:teamMatchID, :ballGroundFeeding, :ballLoadingLaneFeeding, :ballShootingSpeed, :gearGroundFeeding, :gearLoadingLaneFeeding, :gearPlacingSpeed, :abilityToDefend, :abilityToEscapeDefense)";
+      $params = array(
+      ":teamMatchID" => $rating['teamMatchID'],
+      ":ballGroundFeeding" => $rating['ballGroundFeeding'],
+      ":ballLoadingLaneFeeding" => $rating['ballLoadingLaneFeeding'],
+      ":ballShootingSpeed" => $rating['ballShootingSpeed'],
+      ":gearGroundFeeding" => $rating['gearGroundFeeding'],
+      ":gearLoadingLaneFeeding" => $rating['gearLoadingLaneFeeding'],
+      ":gearPlacingSpeed" => $rating['gearPlacingSpeed'],
+      ":abilityToDefend" => $rating['abilityToDefend'],
+      ":abilityToEscapeDefense" => $rating['abilityToEscapeDefense']
+      );
+      $helper->queryDB($query,$params,false);
+    }
+
   }
 }
 
